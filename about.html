@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About · Dwelliq</title>
+  //fonts.googleapis.com" />
+  //fonts.gstatic.com" crossorigin n />
+  //fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --cream: #FDFAF6;
+      --ink: #050506;
+      --gold: #C9974A;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--sans);
+      background: radial-gradient(circle at top, #1a1207 0, #050506 45%, #020203 100%);
+      color: var(--cream);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 16px 32px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      font-family: var(--serif);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-size: 1rem;
+    }
+    .brand span { color: var(--gold); }
+    nav a {
+      font-size: .8rem;
+      color: rgba(253,250,246,.7);
+      text-decoration: none;
+      margin-left: 16px;
+    }
+    nav a:hover { color: var(--gold); }
+    main {
+      flex: 1;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+    p {
+      font-size: .95rem;
+      line-height: 1.7;
+      color: rgba(253,250,246,.75);
+      margin-bottom: 12px;
+    }
+    footer {
+      padding: 20px 32px 32px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      text-align: center;
+      font-size: .75rem;
+      color: rgba(253,250,246,.5);
+    }
+    a.inline { color: var(--gold); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">dwell<span>iq</span></div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>About Dwelliq</h1>
+    <p>
+      Dwelliq is an AI home styling advisor that turns a messy, undecided room into 
+      a clear plan of what to buy next, complete with three options for every piece.
+    </p>
+    <p>
+      This MVP focuses on the Triple‑Option engine: a budget‑anchored pick, an investment 
+      piece, and a local boutique option that respects your postcode and preferences.
+    </p>
+    <p>
+      You can return to the main experience any time on the <a href="index.html" class="inline">home page</a>.
+    </p>
+  </main>
+
+  <footer>
+    © 2026 Dwelliq · MVP prototype
+  </footer>
+</body>
+</html>
