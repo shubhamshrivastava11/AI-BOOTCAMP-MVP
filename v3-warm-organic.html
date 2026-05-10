@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dwelliq — Warm Organic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #FDFAF6;
+      --stone: #F5F2EE;
+      --ink: #0A0908;
+      --warm-grey: #5C5550;
+      --gold: #C9974A;
+      --border: #CCC8C0;
+      --sage: #4A6A58;
+      --rust: #8B3A2A;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-sans); background: var(--cream); color: var(--ink); overflow-x: hidden; }
+
+    /* ── Animations ── */
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes clipIn {
+      from { clip-path: inset(0 100% 0 0); }
+      to   { clip-path: inset(0 0% 0 0); }
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.015); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+    @keyframes progressBar {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+    @keyframes hoverLine {
+      from { transform: scaleX(0); transform-origin: right; }
+      to   { transform: scaleX(1); transform-origin: left; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+
+    .rise-1 { animation: rise 0.7s 0.1s cubic-bezier(0.22,1,0.36,1) both; }
+    .rise-2 { animation: rise 1s 0.15s cubic-bezier(0.22,1,0.36,1) both; }
+    .rise-3 { animation: rise 1s 0.3s cubic-bezier(0.22,1,0.36,1) both; }
+    .rise-4 { animation: rise 0.8s 0.55s cubic-bezier(0.22,1,0.36,1) both; }
+    .rise-5 { animation: rise 0.8s 0.7s cubic-bezier(0.22,1,0.36,1) both; }
+    .rise-6 { animation: rise 0.8s 0.85s cubic-bezier(0.22,1,0.36,1) both; }
+    .rise-7 { animation: rise 0.8s 1s cubic-bezier(0.22,1,0.36,1) both; }
+
+    .breathe { animation: breathe 6s ease-in-out infinite; }
+    .pulse-dot { animation: pulse 2s ease-in-out infinite; }
+    .floating { animation: float 5s ease-in-out infinite; }
+
+    /* ── Navbar ── */
+    nav.topnav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(253,250,246,0.92); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      height: 64px; display: flex; align-items: center; padding: 0 40px;
+      justify-content: space-between;
+    }
+    .nav-logo { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 300; letter-spacing: 0.04em; color: var(--ink); text-decoration: none; }
+    .nav-links { display: flex; align-items: center; gap: 24px; }
+    .nav-link { font-size: 0.75rem; color: var(--warm-grey); text-decoration: none; position: relative; transition: color 0.2s; }
+    .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 1px; background: var(--gold); transform: scaleX(0); transform-origin: right; transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link:hover::after { transform: scaleX(1); transform-origin: left; }
+    .nav-cta { background: var(--ink); color: var(--cream); font-size: 0.75rem; padding: 10px 20px; border-radius: 6px; text-decoration: none; transition: opacity 0.2s; }
+    .nav-cta:hover { opacity: 0.8; }
+    @media (max-width: 640px) { .nav-link { display: none; } nav.topnav { padding: 0 20px; } }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; padding-top: 64px;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 40%, rgba(201,151,74,0.06) 0%, transparent 60%),
+                  radial-gradient(ellipse at 20% 80%, rgba(74,106,88,0.04) 0%, transparent 50%);
+    }
+    /* CSS floor plan */
+    .floor-plan {
+      position: absolute; inset: 0; opacity: 0.12;
+      pointer-events: none;
+    }
+    .floor-plan svg { width: 100%; height: 100%; }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(253,250,246,0.96) 55%, rgba(253,250,246,0.6) 100%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 10; max-width: 1280px; margin: 0 auto; padding: 80px 40px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    @media (max-width: 1024px) { .hero-content { grid-template-columns: 1fr; } .hero-right { display: none; } }
+    @media (max-width: 640px) { .hero-content { padding: 60px 20px; } }
+
+    .tag-pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 999px; padding: 6px 16px; margin-bottom: 40px; }
+    .tag-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+    .tag-pill span { font-size: 0.75rem; color: var(--warm-grey); letter-spacing: 0.05em; }
+    .hero-h1 { font-family: var(--font-serif); font-size: clamp(48px, 7vw, 90px); font-weight: 300; line-height: 1.0; color: var(--ink); margin-bottom: 8px; }
+    .hero-h1-italic { font-style: italic; color: var(--gold); }
+    .hero-p { color: var(--warm-grey); font-size: 1.1rem; line-height: 1.7; margin-bottom: 32px; max-width: 480px; }
+    .hero-p strong { color: var(--ink); font-weight: 400; }
+    .hero-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+    .btn-primary { background: var(--gold); color: var(--cream); padding: 14px 32px; border-radius: 10px; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: background 0.3s; box-shadow: 0 8px 24px rgba(201,151,74,0.2); }
+    .btn-primary:hover { background: #B8863B; }
+    .btn-text { font-size: 0.75rem; color: var(--warm-grey); text-decoration: underline; text-underline-offset: 4px; transition: color 0.2s; }
+    .btn-text:hover { color: var(--ink); }
+
+    .hero-stats { display: flex; gap: 32px; margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--border); }
+    .stat-n { font-family: var(--font-serif); font-size: 2rem; font-weight: 300; color: var(--ink); }
+    .stat-l { font-size: 0.75rem; color: var(--warm-grey); margin-top: 2px; }
+
+    /* Hero right: blueprint card */
+    .hero-right { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .blueprint-card { width: 320px; height: 224px; border-radius: 12px; border: 1px solid rgba(201,151,74,0.2); background: rgba(253,250,246,0.5); backdrop-filter: blur(4px); position: relative; overflow: hidden; }
+    .bp-label { display: flex; align-items: center; gap: 8px; padding: 16px; }
+    .bp-label .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+    .bp-label span { font-size: 0.7rem; color: var(--warm-grey); font-family: var(--font-mono); }
+    .bp-room-item { position: absolute; border: 1px solid; border-radius: 3px; display: flex; align-items: center; justify-content: center; }
+    .bp-room-item span { font-size: 7px; color: rgba(201,151,74,0.7); font-family: var(--font-mono); }
+    .floating-budget { position: absolute; bottom: -20px; right: -24px; background: var(--cream); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; box-shadow: 0 8px 32px rgba(10,9,8,0.1); }
+    .fb-label { font-size: 0.7rem; color: var(--warm-grey); }
+    .fb-amount { font-family: var(--font-serif); font-size: 1.5rem; color: var(--ink); }
+    .fb-bar-track { height: 4px; background: var(--border); border-radius: 999px; margin-top: 8px; width: 128px; overflow: hidden; }
+    .fb-bar-fill { height: 100%; background: var(--sage); border-radius: 999px; width: 53%; }
+
+    /* ── Sections ── */
+    section { padding: 96px 40px; }
+    @media (max-width: 640px) { section { padding: 64px 20px; } }
+    .max-w { max-width: 1280px; margin: 0 auto; }
+    .section-label { font-size: 0.7rem; font-weight: 500; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 16px; }
+    .section-h2 { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3rem); font-weight: 300; line-height: 1.2; color: var(--ink); }
+    .section-p { color: var(--warm-grey); font-size: 0.875rem; line-height: 1.75; }
+
+    /* ── Cards section ── */
+    .cards-bg { background: var(--stone); }
+    .cards-header { text-align: center; margin-bottom: 64px; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+    .opt-card { background: var(--cream); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); cursor: default; transition: box-shadow 0.5s; position: relative; }
+    .opt-card:hover { box-shadow: 0 24px 60px rgba(10,9,8,0.14); }
+    .opt-card-img { position: relative; height: 180px; overflow: hidden; transition: height 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+    .opt-card:hover .opt-card-img { height: 220px; }
+    .opt-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s; }
+    .opt-card:hover .opt-card-img img { transform: scale(1.08); }
+    .opt-card-tag { position: absolute; top: 12px; left: 12px; font-size: 0.7rem; font-weight: 500; padding: 4px 10px; border-radius: 999px; }
+    .opt-card-body { padding: 20px; }
+    .opt-card-name { font-size: 0.875rem; font-weight: 500; margin-bottom: 2px; line-height: 1.3; }
+    .opt-card-retailer { font-size: 0.75rem; color: var(--warm-grey); margin-bottom: 12px; }
+    .opt-card-expl { font-size: 0.75rem; color: var(--warm-grey); line-height: 1.6; margin-bottom: 16px; }
+    .opt-card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .opt-card-price { font-family: var(--font-serif); font-size: 1.5rem; color: var(--gold); }
+    .opt-card-btn { font-size: 0.7rem; border: 1px solid var(--gold); color: var(--gold); padding: 6px 12px; border-radius: 4px; text-decoration: none; transition: all 0.2s; }
+    .opt-card-btn:hover { background: var(--gold); color: var(--cream); }
+    .opt-card-glow { position: absolute; inset: 0; border-radius: 16px; border: 2px solid rgba(201,151,74,0.2); pointer-events: none; opacity: 0; transition: opacity 0.3s; }
+    .opt-card:hover .opt-card-glow { opacity: 1; }
+
+    /* ── Accordion ── */
+    .accordion-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    @media (max-width: 768px) { .accordion-layout { grid-template-columns: 1fr; gap: 48px; } }
+    .accordion-sticky { position: sticky; top: 96px; }
+    .accordion-item { border-top: 1px solid var(--border); padding: 24px 0; cursor: pointer; }
+    .accordion-row { display: flex; align-items: flex-start; gap: 20px; }
+    .accordion-num { font-family: var(--font-mono); font-size: 0.7rem; color: var(--gold); padding-top: 4px; flex-shrink: 0; width: 20px; }
+    .accordion-inner { flex: 1; }
+    .accordion-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .accordion-title { font-family: var(--font-serif); font-size: clamp(1.25rem, 2.5vw, 1.75rem); font-weight: 300; color: var(--ink); transition: color 0.3s; }
+    .accordion-item:hover .accordion-title { color: var(--gold); }
+    .accordion-plus { font-size: 1.25rem; color: var(--warm-grey); transition: transform 0.3s; flex-shrink: 0; }
+    .accordion-item.open .accordion-plus { transform: rotate(45deg); }
+    .accordion-sub { font-size: 0.875rem; color: var(--warm-grey); margin-top: 4px; }
+    .accordion-detail { overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.5s ease, opacity 0.5s ease; }
+    .accordion-item.open .accordion-detail { max-height: 200px; opacity: 1; }
+    .accordion-detail p { font-size: 0.875rem; color: rgba(92,85,80,0.7); margin-top: 12px; line-height: 1.7; border-left: 2px solid rgba(201,151,74,0.3); padding-left: 16px; }
+
+    /* ── Style carousel ── */
+    .carousel-bg { background: var(--stone); }
+    .carousel-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    @media (max-width: 768px) { .carousel-layout { grid-template-columns: 1fr; } }
+    .carousel-img-wrap { position: relative; height: 320px; border-radius: 12px; overflow: hidden; transition: all 0.3s; }
+    .carousel-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .carousel-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(253,250,246,0.8), transparent); }
+    .carousel-caption { position: absolute; bottom: 16px; left: 16px; }
+    .carousel-name { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 300; color: var(--ink); }
+    .carousel-desc { font-size: 0.75rem; color: var(--warm-grey); margin-top: 4px; }
+    .carousel-dots { display: flex; gap: 8px; margin-top: 16px; align-items: center; }
+    .carousel-dot { border: none; background: var(--border); border-radius: 999px; height: 8px; width: 8px; cursor: pointer; transition: all 0.3s; }
+    .carousel-dot.active { width: 32px; }
+    .carousel-dot-label { margin-left: 8px; font-size: 0.75rem; color: var(--warm-grey); }
+    .carousel-arrows { position: absolute; top: 50%; transform: translateY(-50%); }
+    .carousel-arrow-l { left: -16px; }
+    .carousel-arrow-r { right: -16px; }
+    .carousel-arrow { width: 32px; height: 32px; border-radius: 50%; background: var(--cream); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.2s; font-size: 14px; }
+    .carousel-arrow:hover { border-color: var(--gold); }
+    .carousel-relative { position: relative; padding: 0 16px; }
+
+    /* ── Dark CTA ── */
+    .cta-dark { background: var(--ink); color: var(--cream); text-align: center; position: relative; overflow: hidden; }
+    .cta-glow { position: absolute; inset: 0; opacity: 0.05; background: radial-gradient(circle at 50% 50%, var(--gold), transparent 70%); animation: breathe 6s ease-in-out infinite; }
+    .cta-h2 { font-family: var(--font-serif); font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 300; line-height: 1.1; margin-bottom: 32px; }
+    .cta-p { color: rgba(253,250,246,0.5); font-size: 1.1rem; line-height: 1.7; max-width: 480px; margin: 0 auto 40px; }
+    .btn-cta-gold { display: inline-flex; align-items: center; gap: 12px; background: var(--gold); color: var(--ink); padding: 16px 48px; border-radius: 12px; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.3s; box-shadow: 0 16px 40px rgba(201,151,74,0.3); }
+    .btn-cta-gold:hover { background: #D4A96A; transform: translateY(-2px); box-shadow: 0 20px 48px rgba(201,151,74,0.5); }
+    .cta-note { color: rgba(253,250,246,0.3); font-size: 0.75rem; margin-top: 16px; }
+
+    /* ── Footer ── */
+    footer { background: #080706; border-top: 1px solid rgba(255,255,255,0.05); padding: 48px 40px; }
+    @media (max-width: 640px) { footer { padding: 48px 20px; } }
+    .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+    @media (min-width: 640px) { .footer-inner { flex-direction: row; align-items: center; justify-content: space-between; } }
+    .footer-logo { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 300; color: var(--cream); margin-bottom: 4px; }
+    .footer-tagline { font-size: 0.75rem; color: rgba(253,250,246,0.3); max-width: 280px; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-link { font-size: 0.75rem; color: rgba(253,250,246,0.4); text-decoration: none; transition: color 0.2s; }
+    .footer-link:hover { color: rgba(253,250,246,0.7); }
+    .footer-copy { font-size: 0.75rem; color: rgba(253,250,246,0.2); margin-top: 8px; }
+
+    /* Intersection fade */
+    .scroll-reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+    .scroll-reveal.d1 { transition-delay: 0.1s; }
+    .scroll-reveal.d2 { transition-delay: 0.2s; }
+    .scroll-reveal.d3 { transition-delay: 0.3s; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="topnav">
+  <a href="#" class="nav-logo">dwelliq</a>
+  <div class="nav-links">
+    <a href="#how" class="nav-link">How it works</a>
+    <a href="#styles" class="nav-link">Styles</a>
+    <a href="#start" class="nav-cta">Start free →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <!-- CSS Floor plan lines -->
+  <div class="floor-plan">
+    <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <rect x="100" y="100" width="700" height="500" fill="none" stroke="#C9974A" stroke-width="1.5"/>
+      <rect x="120" y="180" width="280" height="160" fill="rgba(201,151,74,0.04)" stroke="#C9974A" stroke-width="1" stroke-dasharray="4 4"/>
+      <rect x="140" y="360" width="180" height="100" fill="rgba(201,151,74,0.03)" stroke="#C9974A" stroke-width="1" stroke-dasharray="4 4"/>
+      <rect x="440" y="180" width="200" height="180" fill="rgba(201,151,74,0.03)" stroke="#C9974A" stroke-width="1" stroke-dasharray="4 4"/>
+      <rect x="660" y="200" width="100" height="80" fill="rgba(201,151,74,0.02)" stroke="#C9974A" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="100" y1="350" x2="800" y2="350" stroke="#C9974A" stroke-width="0.5" stroke-dasharray="6 8" opacity="0.3"/>
+      <line x1="400" y1="100" x2="400" y2="600" stroke="#C9974A" stroke-width="0.5" stroke-dasharray="6 8" opacity="0.3"/>
+      <text x="130" y="270" font-size="10" fill="#C9974A" opacity="0.4" font-family="monospace">sofa</text>
+      <text x="150" y="420" font-size="10" fill="#C9974A" opacity="0.4" font-family="monospace">coffee table</text>
+      <text x="460" y="280" font-size="10" fill="#C9974A" opacity="0.4" font-family="monospace">accent chair</text>
+      <text x="675" y="250" font-size="10" fill="#C9974A" opacity="0.4" font-family="monospace">lamp</text>
+    </svg>
+  </div>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <!-- Left -->
+    <div>
+      <div class="tag-pill rise-1">
+        <span class="dot pulse-dot"></span>
+        <span>AI Home Styling · Free for homeowners</span>
+      </div>
+      <h1 class="hero-h1 rise-2">Your room,</h1>
+      <h1 class="hero-h1 hero-h1-italic rise-3">intentionally designed.</h1>
+      <p class="hero-p rise-4">
+        Tell us your style, budget, and room dimensions.
+        Get three specific, purchasable furniture recommendations for every single piece —
+        <strong>best within budget, best if flexible, best from a local shop</strong>.
+      </p>
+      <div class="hero-ctas rise-5">
+        <a href="#start" class="btn-primary breathe">Design my room — it's free</a>
+        <a href="#how" class="btn-text">See how it works</a>
+      </div>
+      <div class="hero-stats rise-6">
+        <div><div class="stat-n">200+</div><div class="stat-l">Curated products</div></div>
+        <div><div class="stat-n">3</div><div class="stat-l">Options per piece</div></div>
+        <div><div class="stat-n">$0</div><div class="stat-l">For homeowners</div></div>
+      </div>
+    </div>
+    <!-- Right: blueprint + floating card -->
+    <div class="hero-right rise-7">
+      <div style="position:relative;">
+        <div class="blueprint-card">
+          <div class="bp-label">
+            <span class="dot pulse-dot"></span>
+            <span>Living room · 14×12 ft</span>
+          </div>
+          <div class="bp-room-item" style="left:8%;top:30%;width:45%;height:22%;background:rgba(201,151,74,0.07);border-color:rgba(201,151,74,0.5);">
+            <span>Sofa</span>
+          </div>
+          <div class="bp-room-item" style="left:14%;top:55%;width:28%;height:12%;background:rgba(201,151,74,0.05);border-color:rgba(201,151,74,0.35);">
+            <span>Coffee table</span>
+          </div>
+          <div class="bp-room-item" style="left:60%;top:30%;width:28%;height:24%;background:rgba(201,151,74,0.06);border-color:rgba(201,151,74,0.4);">
+            <span>Chair</span>
+          </div>
+          <div class="bp-room-item" style="left:73%;top:60%;width:8%;height:14%;background:rgba(201,151,74,0.03);border-color:rgba(201,151,74,0.3);"></div>
+        </div>
+        <div class="floating-budget floating" style="position:absolute;bottom:-20px;right:-24px;">
+          <div class="fb-label">Budget remaining</div>
+          <div class="fb-amount">$1,850</div>
+          <div class="fb-bar-track"><div class="fb-bar-fill"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THREE OPTIONS -->
+<section class="cards-bg">
+  <div class="max-w">
+    <div class="cards-header scroll-reveal">
+      <div class="section-label">The Dwelliq difference</div>
+      <h2 class="section-h2" style="clip-path:inset(0 0% 0 0);transition:clip-path 1s cubic-bezier(0.77,0,0.175,1);">
+        For every furniture piece,<br><em style="color:var(--gold);">exactly three options.</em>
+      </h2>
+      <p class="section-p" style="max-width:480px;margin:16px auto 0;">
+        Not fifty. Not a single overwhelming catalog. Three specific picks, each with a plain-English reason why it's right for you.
+      </p>
+    </div>
+    <div class="cards-grid">
+      <div class="opt-card scroll-reveal">
+        <div class="opt-card-img">
+          <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80" alt="Sofa" loading="lazy" />
+          <span class="opt-card-tag" style="background:#DCFCE7;color:#166534;">A · Best within budget</span>
+        </div>
+        <div class="opt-card-body">
+          <p class="opt-card-name">Rivet Revolve Modern Sofa</p>
+          <p class="opt-card-retailer">Amazon · Ships in 3–5 days</p>
+          <p class="opt-card-expl">Comfortably within your sofa budget. Solid 4.4/5 rating across 2,300+ reviews. This is the confident, no-regrets choice.</p>
+          <div class="opt-card-footer">
+            <span class="opt-card-price">$799</span>
+            <a href="#start" class="opt-card-btn">View →</a>
+          </div>
+        </div>
+        <div class="opt-card-glow"></div>
+      </div>
+      <div class="opt-card scroll-reveal d1">
+        <div class="opt-card-img">
+          <img src="https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=600&q=80" alt="Sofa" loading="lazy" />
+          <span class="opt-card-tag" style="background:#DBEAFE;color:#1D4ED8;">B · Best if flexible</span>
+        </div>
+        <div class="opt-card-body">
+          <p class="opt-card-name">West Elm Haven Sofa — Natural Linen</p>
+          <p class="opt-card-retailer">West Elm · 10-year warranty</p>
+          <p class="opt-card-expl">$500 over target but earns every dollar. Premium linen. 10-year warranty. The version you'll still love in ten years.</p>
+          <div class="opt-card-footer">
+            <span class="opt-card-price">$1,299</span>
+            <a href="#start" class="opt-card-btn">View →</a>
+          </div>
+        </div>
+        <div class="opt-card-glow"></div>
+      </div>
+      <div class="opt-card scroll-reveal d2">
+        <div class="opt-card-img">
+          <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80" alt="Sofa" loading="lazy" />
+          <span class="opt-card-tag" style="background:#FEF3C7;color:#92400E;">C · Best local option</span>
+        </div>
+        <div class="opt-card-body">
+          <p class="opt-card-name">Haven Home Boutique — Linen Loveseat</p>
+          <p class="opt-card-retailer">Local boutique · 1.8 miles away</p>
+          <p class="opt-card-expl">You can sit on it before you buy it. 5-star rated. Your money stays in the neighborhood — and they'll deliver next week.</p>
+          <div class="opt-card-footer">
+            <span class="opt-card-price">$920</span>
+            <a href="#start" class="opt-card-btn">View →</a>
+          </div>
+        </div>
+        <div class="opt-card-glow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS – accordion -->
+<section id="how">
+  <div class="max-w">
+    <div class="accordion-layout">
+      <div class="accordion-sticky">
+        <div class="section-label">Your journey</div>
+        <h2 class="section-h2">From empty room<br>to furnished home.</h2>
+        <p class="section-p" style="margin:24px 0 32px;">
+          Click any step to learn more. The whole process takes under 3 minutes. No account. No email. Just answers.
+        </p>
+        <a href="#start" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;">Start designing →</a>
+      </div>
+      <div id="accordion">
+        <div class="accordion-item" data-idx="0">
+          <div class="accordion-row">
+            <span class="accordion-num">01</span>
+            <div class="accordion-inner">
+              <div class="accordion-header">
+                <h3 class="accordion-title">Tell us your budget</h3>
+                <span class="accordion-plus">+</span>
+              </div>
+              <p class="accordion-sub">Slide to your total room budget. We'll allocate across categories intelligently.</p>
+              <div class="accordion-detail">
+                <p>We allocate 35% to your sofa, 15% to the rug, 12% to the accent chair, and so on — based on real spending data from thousands of room makeovers. You can always adjust.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item" data-idx="1">
+          <div class="accordion-row">
+            <span class="accordion-num">02</span>
+            <div class="accordion-inner">
+              <div class="accordion-header">
+                <h3 class="accordion-title">Pick your style</h3>
+                <span class="accordion-plus">+</span>
+              </div>
+              <p class="accordion-sub">Five visual directions, each with real room photography — not abstract descriptions.</p>
+              <div class="accordion-detail">
+                <p>Warm Mid-Century, Scandinavian Minimal, Earthy Organic, Modern Glam, Eclectic Maximalist. We match your style to catalog items and rank by how closely they fit your aesthetic.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item" data-idx="2">
+          <div class="accordion-row">
+            <span class="accordion-num">03</span>
+            <div class="accordion-inner">
+              <div class="accordion-header">
+                <h3 class="accordion-title">Answer 4 more questions</h3>
+                <span class="accordion-plus">+</span>
+              </div>
+              <p class="accordion-sub">Room size, household type, how you use the space, your postcode for Option C.</p>
+              <div class="accordion-detail">
+                <p>We need your postcode only to surface local boutiques within 25 miles for Option C. We never store it, share it, or use it for anything else.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item" data-idx="3">
+          <div class="accordion-row">
+            <span class="accordion-num">04</span>
+            <div class="accordion-inner">
+              <div class="accordion-header">
+                <h3 class="accordion-title">Get your recommendations</h3>
+                <span class="accordion-plus">+</span>
+              </div>
+              <p class="accordion-sub">Three options for every piece. Click to buy. Track your budget in real time.</p>
+              <div class="accordion-detail">
+                <p>Option A stays under your allocated budget. Option B is the quality stretch. Option C is always a local boutique. All three equal weight — we never push you toward the expensive option.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STYLE CAROUSEL -->
+<section id="styles" class="carousel-bg">
+  <div class="max-w">
+    <div class="carousel-layout">
+      <div>
+        <div class="section-label">Five style directions</div>
+        <h2 class="section-h2">From warm mid-century<br>to earthy maximalist.</h2>
+        <p class="section-p" style="margin:24px 0 32px;">
+          Pick the one that makes your stomach drop in the best possible way. We'll match your catalog recommendations to that feeling — not just a tag.
+        </p>
+        <a href="#start" class="btn-text">Find my style →</a>
+      </div>
+      <div class="carousel-relative scroll-reveal">
+        <div class="carousel-img-wrap" id="carousel-img-wrap">
+          <img id="carousel-img" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80" alt="" />
+          <div class="carousel-overlay"></div>
+          <div class="carousel-caption">
+            <p class="carousel-name" id="carousel-name">Warm Mid-Century</p>
+            <p class="carousel-desc" id="carousel-desc">Walnut tones, tapered legs, warm textures, natural light</p>
+          </div>
+        </div>
+        <div class="carousel-dots" id="carousel-dots"></div>
+        <div class="carousel-arrows carousel-arrow-l" style="position:absolute;top:50%;transform:translateY(-50%);left:-16px;">
+          <button class="carousel-arrow" id="carousel-prev">←</button>
+        </div>
+        <div class="carousel-arrows carousel-arrow-r" style="position:absolute;top:50%;transform:translateY(-50%);right:-16px;">
+          <button class="carousel-arrow" id="carousel-next">→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DARK CTA -->
+<section id="start" class="cta-dark" style="padding:128px 40px;text-align:center;">
+  <div class="cta-glow"></div>
+  <div style="position:relative;max-width:768px;margin:0 auto;">
+    <div class="section-label" style="color:var(--gold);">Ready to furnish your home?</div>
+    <h2 class="cta-h2">Stop visiting stores<br>on weekends.</h2>
+    <p class="cta-p">Get three perfect options for every furniture piece in your living room. Free. Takes 2 minutes.</p>
+    <a href="#" class="btn-cta-gold">Design my room — it's free <span>→</span></a>
+    <p class="cta-note">No account · No credit card · Always free for homeowners</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">dwelliq</div>
+      <div class="footer-tagline">AI Home Styling Advisor. Affiliate-first. Free for homeowners. Built in NYC &amp; Jersey City.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px;">
+      <div class="footer-links">
+        <a href="#start" class="footer-link">Start free</a>
+        <a href="#how" class="footer-link">How it works</a>
+        <a href="#styles" class="footer-link">Styles</a>
+      </div>
+      <div class="footer-copy">© 2026 Dwelliq</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+  // ── Accordion
+  document.querySelectorAll('.accordion-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // ── Style carousel
+  const styles = [
+    { name: 'Warm Mid-Century', desc: 'Walnut tones, tapered legs, warm textures, natural light', color: '#C9974A', img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80' },
+    { name: 'Scandinavian Minimal', desc: 'Clean lines, light woods, quiet colors, lots of breathing room', color: '#8B9EA8', img: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=600&q=80' },
+    { name: 'Earthy Organic', desc: 'Natural materials, earth tones, textures, warmth without fuss', color: '#8B7355', img: 'https://images.unsplash.com/photo-1585515320310-259814833e62?w=600&q=80' },
+    { name: 'Modern Glam', desc: 'Jewel tones, metallics, bold shapes, confident energy', color: '#7B68C8', img: 'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=600&q=80' },
+    { name: 'Eclectic Maximalist', desc: 'Pattern mixing, bold color, curated layers, intentional abundance', color: '#B85C38', img: 'https://images.unsplash.com/photo-1551298370-9d3d53740c72?w=600&q=80' },
+  ];
+  let activeIdx = 0;
+  let transitioning = false;
+
+  const dotsEl = document.getElementById('carousel-dots');
+  const imgEl = document.getElementById('carousel-img');
+  const nameEl = document.getElementById('carousel-name');
+  const descEl = document.getElementById('carousel-desc');
+  const wrapEl = document.getElementById('carousel-img-wrap');
+
+  function renderDots() {
+    dotsEl.innerHTML = '';
+    styles.forEach((s, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'carousel-dot' + (i === activeIdx ? ' active' : '');
+      btn.style.background = i === activeIdx ? styles[activeIdx].color : '#CCC8C0';
+      btn.addEventListener('click', () => go(i));
+      dotsEl.appendChild(btn);
+    });
+    const lbl = document.createElement('span');
+    lbl.className = 'carousel-dot-label';
+    lbl.textContent = styles[activeIdx].name;
+    dotsEl.appendChild(lbl);
+  }
+
+  function go(to) {
+    if (transitioning || to === activeIdx) return;
+    transitioning = true;
+    wrapEl.style.opacity = '0';
+    wrapEl.style.transform = 'scale(0.98)';
+    setTimeout(() => {
+      activeIdx = to;
+      const s = styles[activeIdx];
+      imgEl.src = s.img;
+      nameEl.textContent = s.name;
+      descEl.textContent = s.desc;
+      wrapEl.style.transition = 'opacity 0.3s, transform 0.3s';
+      wrapEl.style.opacity = '1';
+      wrapEl.style.transform = 'scale(1)';
+      renderDots();
+      transitioning = false;
+    }, 300);
+  }
+
+  document.getElementById('carousel-prev').addEventListener('click', () => go((activeIdx - 1 + styles.length) % styles.length));
+  document.getElementById('carousel-next').addEventListener('click', () => go((activeIdx + 1) % styles.length));
+  renderDots();
+  setInterval(() => go((activeIdx + 1) % styles.length), 4000);
+</script>
+</body>
+</html>

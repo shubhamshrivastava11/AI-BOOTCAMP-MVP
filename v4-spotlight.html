@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dwelliq — Spotlight</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #FDFAF6; --stone: #F5F2EE; --ink: #0A0908;
+      --warm-grey: #5C5550; --gold: #C9974A; --border: #CCC8C0;
+      --sage: #4A6A58; --rust: #8B3A2A;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-sans); background: var(--cream); color: var(--ink); overflow-x: hidden; }
+
+    /* ── Animations ── */
+    @keyframes v4Rise { from { opacity:0; transform:translateY(32px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes v4Border { 0%,100% { background-position:0% 50%; } 50% { background-position:100% 50%; } }
+    @keyframes v4Pulse { 0%,100% { box-shadow:0 0 0 0 rgba(201,151,74,0.4); } 50% { box-shadow:0 0 0 12px rgba(201,151,74,0); } }
+    @keyframes v4Beam { from { transform:scaleX(0); transform-origin:left; } to { transform:scaleX(1); transform-origin:left; } }
+    @keyframes noiseBg { 0% { background-position:0% 0%; } 50% { background-position:100% 100%; } 100% { background-position:0% 0%; } }
+    @keyframes starFade { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+    @keyframes slideIn { from { opacity:0; transform:translateX(40px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes slideOut { from { opacity:1; transform:translateX(0); } to { opacity:0; transform:translateX(-40px); } }
+
+    .r1 { animation: v4Rise 0.6s 0.1s cubic-bezier(0.22,1,0.36,1) both; }
+    .r2 { animation: v4Rise 1s 0.2s cubic-bezier(0.22,1,0.36,1) both; }
+    .r3 { animation: v4Rise 0.8s 0.4s cubic-bezier(0.22,1,0.36,1) both; }
+    .r4 { animation: v4Rise 0.8s 0.55s cubic-bezier(0.22,1,0.36,1) both; }
+    .r5 { animation: v4Rise 0.8s 0.7s cubic-bezier(0.22,1,0.36,1) both; }
+    .r6 { animation: v4Rise 1s 0.45s cubic-bezier(0.22,1,0.36,1) both; }
+    .pulse-ring { animation: v4Pulse 2.5s ease-in-out infinite; }
+    .beam-in { animation: v4Beam 1.2s cubic-bezier(0.22,1,0.36,1) both; }
+
+    /* ── Scroll progress ── */
+    #scroll-bar { position:fixed; top:0; left:0; right:0; z-index:200; height:2px; background:var(--gold); transform-origin:left; transform:scaleX(0); transition:transform 80ms linear; }
+
+    /* ── Cursor spotlight ── */
+    #spotlight { pointer-events:none; position:fixed; z-index:0; border-radius:50%; width:600px; height:600px; transform:translate(-50%,-50%); background:radial-gradient(circle, rgba(201,151,74,0.07) 0%, transparent 70%); transition:left 80ms ease-out, top 80ms ease-out; }
+
+    /* ── Navbar ── */
+    nav.topnav { position:fixed; top:12px; left:0; right:0; z-index:100; padding:0 16px; }
+    .nav-pill { max-width:1152px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:12px 24px; border-radius:16px; background:rgba(253,250,246,0.85); backdrop-filter:blur(16px); border:1px solid rgba(204,200,192,0.6); box-shadow:0 1px 8px rgba(10,9,8,0.04); }
+    .nav-logo { font-family:var(--font-serif); font-size:1.25rem; font-weight:300; color:var(--ink); text-decoration:none; }
+    .nav-links { display:flex; align-items:center; gap:4px; }
+    .nav-link { padding:8px 16px; font-size:0.875rem; color:var(--warm-grey); text-decoration:none; border-radius:12px; transition:all 0.2s; }
+    .nav-link:hover { color:var(--ink); background:var(--stone); }
+    .nav-cta { font-size:0.875rem; font-weight:500; color:var(--cream); padding:10px 20px; border-radius:12px; text-decoration:none; background:linear-gradient(135deg,#C9974A,#E8C88A,#A67C3B,#C9974A); background-size:300% 300%; animation:v4Border 4s ease infinite; }
+    @media (max-width:640px) { .nav-links { display:none; } }
+
+    /* ── Hero ── */
+    .hero { min-height:100vh; display:flex; align-items:center; padding-top:88px; position:relative; overflow:hidden; }
+    .hero-noise-bg { position:absolute; inset:0;
+      background: linear-gradient(135deg, #FDFAF6 0%, #F5F2EE 25%, #FDFAF6 50%, #F0EDE6 75%, #FDFAF6 100%);
+      background-size:400% 400%; animation:noiseBg 12s ease infinite;
+    }
+    .hero-overlay { position:absolute; inset:0; background:linear-gradient(to right, rgba(253,250,246,0.6) 50%, transparent 100%); pointer-events:none; }
+    .hero-content { position:relative; z-index:10; max-width:1152px; margin:0 auto; padding:80px 40px; width:100%; display:grid; grid-template-columns:1fr 1.1fr; gap:48px; align-items:center; }
+    @media (max-width:1024px) { .hero-content { grid-template-columns:1fr; } .hero-preview { display:none; } }
+    @media (max-width:640px) { .hero-content { padding:60px 20px; } }
+
+    .trust-pill { display:inline-flex; align-items:center; gap:10px; background:rgba(253,250,246,0.85); backdrop-filter:blur(4px); border:1px solid var(--border); border-radius:999px; padding:8px 16px; margin-bottom:32px; }
+    .trust-dot { width:8px; height:8px; border-radius:50%; background:var(--gold); }
+    .trust-pill span { font-size:0.75rem; color:var(--warm-grey); font-weight:500; }
+    .hero-h1 { font-family:var(--font-serif); font-size:clamp(46px,6.5vw,88px); font-weight:300; line-height:1.05; color:var(--ink); margin-bottom:24px; }
+    .hero-h1 em { color:var(--gold); }
+    .hero-p { color:var(--warm-grey); font-size:1.1rem; line-height:1.7; margin-bottom:32px; max-width:500px; }
+    .hero-p strong { color:var(--ink); font-weight:500; }
+    .hero-ctas { display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin-bottom:48px; }
+    .btn-dark { position:relative; display:inline-flex; align-items:center; gap:8px; background:var(--ink); color:var(--cream); padding:14px 28px; border-radius:12px; font-size:0.875rem; font-weight:500; text-decoration:none; overflow:hidden; }
+    .btn-dark::after { content:''; position:absolute; inset:0; background:#1A1918; transform:translateY(100%); transition:transform 0.3s; }
+    .btn-dark span { position:relative; z-index:1; }
+    .btn-dark:hover::after { transform:translateY(0); }
+    .avatar-cluster { display:flex; align-items:center; gap:12px; }
+    .avatars { display:flex; }
+    .avatar { width:28px; height:28px; border-radius:50%; border:2px solid var(--cream); margin-left:-6px; }
+    .avatar:first-child { margin-left:0; }
+    .avatar-label { font-size:0.75rem; color:var(--warm-grey); }
+    .stat-pills { display:flex; flex-wrap:wrap; gap:10px; }
+    .stat-pill { display:inline-flex; align-items:center; gap:6px; background:var(--stone); color:var(--warm-grey); font-size:0.75rem; padding:6px 14px; border-radius:999px; border:1px solid var(--border); }
+    .stat-pill .icon { color:var(--gold); }
+
+    /* ── Live Preview ── */
+    .preview-wrap { border-radius:16px; border:1px solid var(--border); background:var(--cream); overflow:hidden; box-shadow:0 20px 60px rgba(10,9,8,0.06); }
+    .preview-bar { padding:12px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:var(--stone); }
+    .traffic-lights { display:flex; gap:8px; }
+    .tl { width:12px; height:12px; border-radius:50%; }
+    .preview-url { font-size:0.75rem; color:var(--warm-grey); font-family:var(--font-mono); }
+    .preview-tabs { display:flex; border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; }
+    .preview-tabs::-webkit-scrollbar { display:none; }
+    .preview-tab { flex-shrink:0; padding:10px 16px; font-size:0.75rem; font-weight:500; border-bottom:2px solid transparent; cursor:pointer; color:var(--warm-grey); transition:all 0.2s; white-space:nowrap; }
+    .preview-tab.active { border-bottom-color:var(--gold); color:var(--gold); background:var(--cream); }
+    .preview-budget-bar { padding:10px 20px; display:flex; align-items:center; gap:12px; border-bottom:1px solid rgba(204,200,192,0.4); }
+    .preview-budget-bar span { font-size:0.75rem; color:var(--warm-grey); }
+    .preview-track { flex:1; height:6px; background:var(--border); border-radius:999px; overflow:hidden; }
+    .preview-fill { height:100%; background:var(--sage); border-radius:999px; width:52%; transition:width 0.3s; }
+    .preview-amount { font-size:0.75rem; font-family:var(--font-mono); color:var(--sage); white-space:nowrap; }
+    .preview-opts { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; padding:20px; }
+    .preview-opt { border-radius:12px; border:2px solid var(--border); overflow:hidden; cursor:pointer; transition:all 0.3s; text-align:left; background:transparent; }
+    .preview-opt.selected { border-color:var(--gold); box-shadow:0 0 0 4px rgba(201,151,74,0.08); }
+    .preview-opt-img { height:96px; background:var(--stone); overflow:hidden; position:relative; }
+    .preview-opt-img img { width:100%; height:100%; object-fit:cover; opacity:0.85; }
+    .preview-opt-badge { position:absolute; top:8px; left:8px; font-size:9px; font-weight:500; padding:3px 6px; border-radius:999px; }
+    .preview-opt-body { padding:10px; }
+    .preview-opt-label { font-size:10px; color:var(--warm-grey); margin-bottom:2px; }
+    .preview-opt-name { font-size:0.7rem; font-weight:500; color:var(--ink); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .preview-opt-price { font-family:var(--font-serif); font-size:1rem; color:var(--gold); margin-top:4px; }
+    .preview-opt-retailer { font-size:9px; color:var(--warm-grey); }
+    .preview-selected-detail { margin:0 20px 20px; padding:16px; background:var(--stone); border-radius:12px; border:1px solid var(--border); display:flex; align-items:center; gap:12px; }
+    .detail-thumb { width:56px; height:56px; border-radius:8px; overflow:hidden; flex-shrink:0; }
+    .detail-thumb img { width:100%; height:100%; object-fit:cover; }
+    .detail-info { flex:1; min-width:0; }
+    .detail-name { font-size:0.75rem; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .detail-retailer { font-size:10px; color:var(--warm-grey); }
+    .detail-price { font-family:var(--font-serif); font-size:1.1rem; color:var(--gold); }
+    .detail-btn { background:var(--gold); color:var(--cream); font-size:0.75rem; padding:6px 12px; border-radius:8px; border:none; cursor:pointer; white-space:nowrap; }
+
+    /* ── Stats ── */
+    .stats-bar { border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--stone); }
+    .stats-grid { max-width:1152px; margin:0 auto; padding:48px 40px; display:grid; grid-template-columns:repeat(4,1fr); gap:40px; text-align:center; }
+    @media (max-width:768px) { .stats-grid { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:480px) { .stats-grid { grid-template-columns:1fr 1fr; gap:24px; padding:40px 20px; } }
+    .stat-big { font-family:var(--font-serif); font-size:clamp(2rem,4vw,3rem); font-weight:300; color:var(--ink); }
+    .stat-lbl { font-size:0.7rem; color:var(--warm-grey); margin-top:8px; letter-spacing:0.04em; }
+
+    /* ── Feature grid ── */
+    .features-section { padding:96px 40px; }
+    @media (max-width:640px) { .features-section { padding:64px 20px; } }
+    .section-header { text-align:center; margin-bottom:64px; }
+    .section-label { font-size:0.7rem; font-weight:500; color:var(--gold); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:16px; }
+    .section-h2 { font-family:var(--font-serif); font-size:clamp(2rem,4vw,3rem); font-weight:300; line-height:1.2; color:var(--ink); }
+    .features-grid { max-width:1152px; margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+    @media (max-width:900px) { .features-grid { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:580px) { .features-grid { grid-template-columns:1fr; } }
+    .glow-card { position:relative; border-radius:16px; transition:all 0.7s; }
+    .glow-card-border { position:absolute; inset:-1px; border-radius:16px; background:linear-gradient(135deg,rgba(201,151,74,0.3) 0%,rgba(201,151,74,0.1) 100%); transition:background 0.5s; }
+    .glow-card:hover .glow-card-border { background:linear-gradient(135deg,#C9974A 0%,#E8C88A 40%,#C9974A 80%); }
+    .glow-card-inner { position:relative; border-radius:16px; background:var(--cream); padding:24px; }
+    .feature-icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:16px; font-size:1.1rem; }
+    .feature-title { font-weight:500; margin-bottom:8px; }
+    .feature-desc { font-size:0.875rem; color:var(--warm-grey); line-height:1.6; }
+    .feature-card { transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease; }
+    .feature-card:hover { transform:translateY(-6px); box-shadow:0 20px 60px rgba(10,9,8,0.1); }
+
+    /* ── Process / dark section ── */
+    .process-section { background:var(--ink); padding:96px 40px; }
+    @media (max-width:640px) { .process-section { padding:64px 20px; } }
+    .process-grid { max-width:1152px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; }
+    @media (max-width:768px) { .process-grid { grid-template-columns:1fr; } }
+    .process-h2 { font-family:var(--font-serif); font-size:clamp(2rem,4vw,3rem); font-weight:300; line-height:1.2; color:var(--cream); margin-bottom:24px; }
+    .process-h2 em { color:var(--gold); }
+    .process-p { color:rgba(253,250,246,0.5); font-size:0.875rem; line-height:1.7; margin-bottom:32px; }
+    .btn-outline-gold { display:inline-flex; align-items:center; gap:8px; border:1px solid var(--gold); color:var(--gold); padding:12px 24px; border-radius:12px; font-size:0.875rem; text-decoration:none; transition:all 0.3s; }
+    .btn-outline-gold:hover { background:var(--gold); color:var(--ink); }
+    .process-steps { }
+    .process-step { display:flex; gap:20px; padding:24px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+    .process-step:last-child { border-bottom:none; }
+    .step-num { font-family:var(--font-mono); font-size:0.7rem; color:var(--gold); flex-shrink:0; }
+    .step-line { height:1px; background:rgba(201,151,74,0.3); flex:1; margin-top:6px; }
+    .step-content { }
+    .step-title { font-weight:500; color:var(--cream); margin-bottom:4px; }
+    .step-sub { font-size:0.875rem; color:rgba(253,250,246,0.4); }
+
+    /* ── Social proof ── */
+    .proof-section { padding:96px 40px; }
+    @media (max-width:640px) { .proof-section { padding:64px 20px; } }
+    .proof-grid { max-width:1152px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start; }
+    @media (max-width:768px) { .proof-grid { grid-template-columns:1fr; } }
+    .testimonial-wrap { min-height:160px; position:relative; }
+    .testimonial-slide { opacity:0; pointer-events:none; transition:opacity 0.5s, transform 0.5s; position:absolute; inset:0; transform:translateX(40px); }
+    .testimonial-slide.active { opacity:1; pointer-events:auto; transform:translateX(0); position:static; }
+    .stars { display:flex; gap:4px; margin-bottom:12px; }
+    .star { color:var(--gold); font-size:0.875rem; }
+    .testimonial-quote { color:var(--ink); font-size:0.875rem; line-height:1.75; margin-bottom:12px; }
+    .testimonial-name { font-weight:500; font-size:0.875rem; }
+    .testimonial-role { font-size:0.75rem; color:var(--warm-grey); }
+    .testimonial-dots { display:flex; gap:8px; margin-top:16px; }
+    .t-dot { width:6px; height:6px; border-radius:50%; background:var(--border); cursor:pointer; transition:all 0.3s; }
+    .t-dot.active { width:24px; border-radius:3px; background:var(--gold); }
+
+    /* Competitor rows */
+    .comp-list { margin-top:24px; }
+    .comp-row { display:flex; align-items:center; gap:12px; padding:16px; border-radius:12px; border:1px solid rgba(204,200,192,0.5); margin-bottom:4px; transition:border-color 0.2s; }
+    .comp-row:hover { border-color:var(--border); }
+    .comp-x { width:20px; height:20px; border-radius:50%; border:1px solid rgba(139,58,42,0.3); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .comp-x svg { display:block; }
+    .comp-name { font-size:0.875rem; font-weight:500; }
+    .comp-issue { font-size:0.75rem; color:var(--warm-grey); margin-left:auto; text-align:right; max-width:140px; }
+    .dwelliq-row { display:flex; align-items:center; gap:16px; padding:16px; border-radius:12px; background:rgba(201,151,74,0.05); border:1px solid rgba(201,151,74,0.2); margin-top:16px; }
+    .dwelliq-check { width:24px; height:24px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .dwelliq-name { font-size:0.875rem; font-weight:500; }
+    .dwelliq-desc { font-size:0.75rem; color:var(--warm-grey); }
+    .try-link { margin-left:auto; font-size:0.75rem; color:var(--gold); text-decoration:none; white-space:nowrap; }
+    .try-link:hover { text-decoration:underline; }
+
+    /* ── Final CTA ── */
+    .final-cta { padding:128px 40px; background:var(--stone); text-align:center; }
+    @media (max-width:640px) { .final-cta { padding:80px 20px; } }
+    .cta-h2 { font-family:var(--font-serif); font-size:clamp(2.5rem,5vw,4rem); font-weight:300; color:var(--ink); line-height:1.1; margin-bottom:24px; }
+    .cta-h2 em { color:var(--gold); }
+    .cta-p { color:var(--warm-grey); font-size:1.1rem; margin-bottom:40px; }
+    .btn-animated-gold { display:inline-flex; align-items:center; gap:12px; color:var(--cream); padding:16px 48px; border-radius:16px; font-size:1rem; font-weight:500; text-decoration:none; box-shadow:0 8px 32px rgba(201,151,74,0.2); background:linear-gradient(135deg,#C9974A,#E8C88A,#A67C3B,#C9974A); background-size:300% 300%; animation:v4Border 4s ease infinite; }
+    .cta-checks { display:flex; flex-wrap:wrap; justify-content:center; gap:24px; margin-top:48px; }
+    .cta-check { display:flex; align-items:center; gap:6px; font-size:0.75rem; color:var(--warm-grey); }
+    .cta-check .tick { color:var(--sage); }
+
+    /* ── Footer ── */
+    footer { background:var(--ink); padding:48px 40px; }
+    @media (max-width:640px) { footer { padding:48px 20px; } }
+    .footer-row { max-width:1152px; margin:0 auto; display:flex; flex-direction:column; gap:24px; }
+    @media (min-width:640px) { .footer-row { flex-direction:row; align-items:center; justify-content:space-between; } }
+    .footer-logo { font-family:var(--font-serif); font-size:1.5rem; font-weight:300; color:var(--cream); margin-bottom:4px; }
+    .footer-tagline { font-size:0.75rem; color:rgba(253,250,246,0.3); }
+    .footer-links { display:flex; gap:24px; flex-wrap:wrap; }
+    .footer-link { font-size:0.75rem; color:rgba(253,250,246,0.4); text-decoration:none; transition:color 0.2s; }
+    .footer-link:hover { color:rgba(253,250,246,0.7); }
+    .footer-copy { font-size:0.75rem; color:rgba(253,250,246,0.2); margin-top:8px; text-align:right; }
+
+    /* Scroll reveal */
+    .scroll-reveal { opacity:0; transform:translateY(28px); transition:opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .scroll-reveal.visible { opacity:1; transform:none; }
+    .d1 { transition-delay:0.1s; } .d2 { transition-delay:0.2s; } .d3 { transition-delay:0.3s; }
+    .d4 { transition-delay:0.4s; } .d5 { transition-delay:0.5s; }
+    .reveal-x { opacity:0; transform:translateX(-16px); transition:all 0.5s cubic-bezier(0.22,1,0.36,1); }
+    .reveal-x.visible { opacity:1; transform:none; }
+    .reveal-xr { opacity:0; transform:translateX(16px); transition:all 0.5s cubic-bezier(0.22,1,0.36,1); }
+    .reveal-xr.visible { opacity:1; transform:none; }
+  </style>
+</head>
+<body>
+
+<!-- Scroll progress -->
+<div id="scroll-bar"></div>
+<!-- Spotlight -->
+<div id="spotlight"></div>
+
+<!-- NAVBAR -->
+<nav class="topnav">
+  <div class="nav-pill">
+    <a href="#" class="nav-logo">dwelliq</a>
+    <div class="nav-links">
+      <a href="#how" class="nav-link">How it works</a>
+      <a href="#why" class="nav-link">Why Dwelliq</a>
+      <a href="#styles" class="nav-link">Styles</a>
+    </div>
+    <a href="#start" class="nav-cta">Start free →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-noise-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <!-- Left -->
+    <div>
+      <div class="trust-pill r1">
+        <span class="trust-dot pulse-ring"></span>
+        <span>AI Home Styling · Free for homeowners</span>
+      </div>
+      <h1 class="hero-h1 r2">Stop guessing.<br><em>Start knowing</em><br>what to buy.</h1>
+      <p class="hero-p r3">Tell us your room dimensions, budget, and style. Get <strong>three specific, purchasable furniture recommendations</strong> for every piece — best within budget, best if flexible, best from a local shop near you.</p>
+      <div class="hero-ctas r4">
+        <a href="#start" class="btn-dark"><span>Design my room — it's free</span><span>→</span></a>
+        <div class="avatar-cluster">
+          <div class="avatars">
+            <div class="avatar" style="background:#C9974A;"></div>
+            <div class="avatar" style="background:#8B7355;"></div>
+            <div class="avatar" style="background:#4A6A58;"></div>
+          </div>
+          <span class="avatar-label">Loved by first-time homeowners</span>
+        </div>
+      </div>
+      <div class="stat-pills r5">
+        <span class="stat-pill"><span class="icon">◎</span>Free for homeowners</span>
+        <span class="stat-pill"><span class="icon">⊞</span>3 options per piece</span>
+        <span class="stat-pill"><span class="icon">📍</span>Local boutiques</span>
+        <span class="stat-pill"><span class="icon">⊘</span>No account</span>
+      </div>
+    </div>
+    <!-- Right: live preview -->
+    <div class="hero-preview r6">
+      <div class="preview-wrap">
+        <div class="preview-bar">
+          <div class="traffic-lights"><span class="tl" style="background:#FC5F5A;"></span><span class="tl" style="background:#FDBD2E;"></span><span class="tl" style="background:#34C84A;"></span></div>
+          <span class="preview-url">dwelliq.app/recommendations</span>
+          <div style="width:64px;"></div>
+        </div>
+        <!-- Category tabs -->
+        <div class="preview-tabs" id="preview-tabs"></div>
+        <!-- Budget bar -->
+        <div class="preview-budget-bar">
+          <span>Room budget:</span>
+          <div class="preview-track"><div class="preview-fill"></div></div>
+          <span class="preview-amount">$3,500 · $1,680 left</span>
+        </div>
+        <!-- Options -->
+        <div class="preview-opts" id="preview-opts"></div>
+        <!-- Selected detail -->
+        <div class="preview-selected-detail" id="preview-detail"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-grid">
+    <div class="scroll-reveal"><div class="stat-big" data-to="185" data-suffix="B" data-prefix="$">$0B</div><div class="stat-lbl">US home decor market</div></div>
+    <div class="scroll-reveal d1"><div class="stat-big" data-to="200" data-suffix="+">0+</div><div class="stat-lbl">Curated products</div></div>
+    <div class="scroll-reveal d2"><div class="stat-big" data-to="3">0</div><div class="stat-lbl">Options per piece, always</div></div>
+    <div class="scroll-reveal d3"><div class="stat-big" data-to="0" data-prefix="$">$0</div><div class="stat-lbl">Cost for homeowners</div></div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features-section" id="how">
+  <div style="max-width:1152px;margin:0 auto;">
+    <div class="section-header scroll-reveal">
+      <div class="section-label">Why Dwelliq works</div>
+      <h2 class="section-h2">Built around one insight:<br><em style="color:var(--gold);">three options eliminate paralysis.</em></h2>
+    </div>
+    <div class="features-grid" id="features-grid"></div>
+  </div>
+</section>
+
+<!-- PROCESS (dark) -->
+<section class="process-section" id="why">
+  <div class="process-grid">
+    <div>
+      <div class="section-label">The process</div>
+      <h2 class="process-h2">From empty room<br>to furnished home.<br><em>In under 3 minutes.</em></h2>
+      <p class="process-p">No account. No credit card. Just answers. We designed the flow to feel like a conversation with a designer friend, not a form.</p>
+      <a href="#start" class="btn-outline-gold">Start now — it's free</a>
+    </div>
+    <div class="process-steps" id="process-steps"></div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="proof-section" id="styles">
+  <div class="proof-grid">
+    <div>
+      <div class="section-label scroll-reveal">What people say</div>
+      <h2 class="section-h2 scroll-reveal" style="margin-bottom:32px;">Trusted by first-time<br>homeowners.</h2>
+      <div class="testimonial-wrap" id="testimonial-wrap"></div>
+    </div>
+    <div>
+      <div class="section-label scroll-reveal">Why everything else fails</div>
+      <div class="comp-list" id="comp-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="start">
+  <div class="scroll-reveal" style="max-width:768px;margin:0 auto;">
+    <div class="section-label">Ready to start?</div>
+    <h2 class="cta-h2">Design your room today.<br><em>It's completely free.</em></h2>
+    <p class="cta-p">Takes 2 minutes. Three options for every piece. No account. No credit card.</p>
+    <a href="#" class="btn-animated-gold">Design my room — it's free →</a>
+    <div class="cta-checks">
+      <span class="cta-check"><span class="tick">✓</span> No credit card</span>
+      <span class="cta-check"><span class="tick">✓</span> No account required</span>
+      <span class="cta-check"><span class="tick">✓</span> Free for homeowners</span>
+      <span class="cta-check"><span class="tick">✓</span> Local boutiques included</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-row">
+    <div>
+      <div class="footer-logo">dwelliq</div>
+      <div class="footer-tagline">AI Home Styling Advisor · Free for homeowners · Affiliate-first</div>
+    </div>
+    <div>
+      <div class="footer-links">
+        <a href="#start" class="footer-link">Start free</a>
+        <a href="#how" class="footer-link">How it works</a>
+        <a href="#styles" class="footer-link">Styles</a>
+      </div>
+      <div class="footer-copy">© 2026 Dwelliq</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Scroll progress
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+  document.getElementById('scroll-bar').style.transform = `scaleX(${pct})`;
+}, { passive: true });
+
+// ── Spotlight
+const spotlight = document.getElementById('spotlight');
+window.addEventListener('mousemove', e => {
+  spotlight.style.left = e.clientX + 'px';
+  spotlight.style.top = e.clientY + 'px';
+});
+
+// ── Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // Tick animation
+      const tick = e.target.querySelector('[data-to]') || (e.target.dataset.to !== undefined ? e.target : null);
+      if (tick) animateTick(tick);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.scroll-reveal, .reveal-x, .reveal-xr').forEach(el => obs.observe(el));
+
+// ── Number ticker
+function animateTick(el) {
+  const to = parseInt(el.dataset.to);
+  const suffix = el.dataset.suffix || '';
+  const prefix = el.dataset.prefix || '';
+  const dur = 1400;
+  const start = performance.now();
+  function step(now) {
+    const p = Math.min((now - start) / dur, 1);
+    const eased = p < 0.5 ? 4*p*p*p : 1 - Math.pow(-2*p+2, 3)/2;
+    el.textContent = prefix + Math.round(eased * to).toLocaleString() + suffix;
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+// Trigger stat ticks on scroll
+const statObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('[data-to]').forEach(animateTick);
+    }
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('.scroll-reveal').forEach(el => statObs.observe(el));
+
+// ── Live Preview data
+const CATS = ['Sofa', 'Coffee Table', 'Area Rug', 'Floor Lamp', 'Accent Chair'];
+const DATA = {
+  'Sofa': {
+    A: { name:'Rivet Revolve Modern Sofa', price:799, retailer:'Amazon', img:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80', label:'Best within budget', badge:'bg:#DCFCE7;color:#166534' },
+    B: { name:'West Elm Haven — Natural Linen', price:1299, retailer:'West Elm', img:'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400&q=80', label:'Best if flexible', badge:'bg:#DBEAFE;color:#1D4ED8' },
+    C: { name:'Haven Home Boutique Linen', price:920, retailer:'Local · 1.8 mi', img:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=80', label:'Best local', badge:'bg:#FEF3C7;color:#92400E' },
+  },
+  'Coffee Table': {
+    A: { name:'Amazon Basics Walnut Round', price:189, retailer:'Amazon', img:'https://images.unsplash.com/photo-1577140917170-285929fb55b7?w=400&q=80', label:'Best within budget', badge:'bg:#DCFCE7;color:#166534' },
+    B: { name:'West Elm Marble-Top', price:449, retailer:'West Elm', img:'https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=400&q=80', label:'Best if flexible', badge:'bg:#DBEAFE;color:#1D4ED8' },
+    C: { name:'Artisan Craft — Live Edge Oak', price:380, retailer:'Local · 2.3 mi', img:'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=400&q=80', label:'Best local', badge:'bg:#FEF3C7;color:#92400E' },
+  },
+  'Area Rug': {
+    A: { name:'IKEA STOENSE Low Pile', price:129, retailer:'IKEA', img:'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=400&q=80', label:'Best within budget', badge:'bg:#DCFCE7;color:#166534' },
+    B: { name:'Loloi Amber Lewis Homage', price:498, retailer:'Loloi', img:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80', label:'Best if flexible', badge:'bg:#DBEAFE;color:#1D4ED8' },
+    C: { name:'Thread & Weave Hand-Knotted', price:399, retailer:'Local · 3.1 mi', img:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80', label:'Best local', badge:'bg:#FEF3C7;color:#92400E' },
+  },
+  'Floor Lamp': {
+    A: { name:'IKEA RANARP Off-White', price:49, retailer:'IKEA', img:'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&q=80', label:'Best within budget', badge:'bg:#DCFCE7;color:#166534' },
+    B: { name:'West Elm Sculptural Arc', price:299, retailer:'West Elm', img:'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400&q=80', label:'Best if flexible', badge:'bg:#DBEAFE;color:#1D4ED8' },
+    C: { name:'Glow Studio — Rattan Arc', price:145, retailer:'Local · 0.9 mi', img:'https://images.unsplash.com/photo-1530603907829-659dc8b5f5de?w=400&q=80', label:'Best local', badge:'bg:#FEF3C7;color:#92400E' },
+  },
+  'Accent Chair': {
+    A: { name:'IKEA POÄNG — Birch Beige', price:139, retailer:'IKEA', img:'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=400&q=80', label:'Best within budget', badge:'bg:#DCFCE7;color:#166534' },
+    B: { name:'West Elm Roar+Rabbit Swivel', price:499, retailer:'West Elm', img:'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&q=80', label:'Best if flexible', badge:'bg:#DBEAFE;color:#1D4ED8' },
+    C: { name:'Seat & Co. Velvet Terracotta', price:329, retailer:'Local · 1.4 mi', img:'https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=400&q=80', label:'Best local', badge:'bg:#FEF3C7;color:#92400E' },
+  },
+};
+
+let activecat = 'Sofa', activeopt = 'A';
+
+function renderPreview() {
+  // Tabs
+  const tabsEl = document.getElementById('preview-tabs');
+  tabsEl.innerHTML = CATS.map(c => `<button class="preview-tab ${c===activecat?'active':''}" data-cat="${c}">${c}</button>`).join('');
+  tabsEl.querySelectorAll('.preview-tab').forEach(btn => {
+    btn.addEventListener('click', () => { activecat = btn.dataset.cat; activeopt = 'A'; renderPreview(); });
+  });
+
+  // Options
+  const optsEl = document.getElementById('preview-opts');
+  optsEl.innerHTML = ['A','B','C'].map(opt => {
+    const d = DATA[activecat][opt];
+    const badgeParts = d.badge.split(';');
+    const bgColor = badgeParts[0].replace('bg:','');
+    const txtColor = badgeParts[1].replace('color:','');
+    return `<button class="preview-opt ${opt===activeopt?'selected':''}" data-opt="${opt}">
+      <div class="preview-opt-img">
+        <img src="${d.img}" alt="" loading="lazy" />
+        <span class="preview-opt-badge" style="background:${bgColor};color:${txtColor};">${opt}</span>
+      </div>
+      <div class="preview-opt-body">
+        <div class="preview-opt-label">${d.label}</div>
+        <div class="preview-opt-name">${d.name}</div>
+        <div class="preview-opt-price">$${d.price.toLocaleString()}</div>
+        <div class="preview-opt-retailer">${d.retailer}</div>
+      </div>
+    </button>`;
+  }).join('');
+  optsEl.querySelectorAll('.preview-opt').forEach(btn => {
+    btn.addEventListener('click', () => { activeopt = btn.dataset.opt; renderPreview(); });
+  });
+
+  // Detail
+  const item = DATA[activecat][activeopt];
+  document.getElementById('preview-detail').innerHTML = `
+    <div class="detail-thumb"><img src="${item.img}" alt="" loading="lazy" /></div>
+    <div class="detail-info">
+      <div class="detail-name">${item.name}</div>
+      <div class="detail-retailer">${item.retailer}</div>
+      <div class="detail-price">$${item.price.toLocaleString()}</div>
+    </div>
+    <button class="detail-btn">View →</button>
+  `;
+}
+renderPreview();
+
+// ── Features
+const features = [
+  { icon:'◎', title:'Option A — Within budget', desc:'The confident default. Curated to fit your category allocation and style. Solid ratings, fast shipping.', bg:'#DCFCE7', tc:'#166534' },
+  { icon:'⊞', title:'Option B — Best if flexible', desc:"Worth the stretch. Usually 20–35% more. The version you'll still love in ten years.", bg:'#DBEAFE', tc:'#1D4ED8' },
+  { icon:'📍', title:'Option C — Best local', desc:'A boutique near you. You can see it in person before buying. Your money stays in the neighborhood.', bg:'#FEF3C7', tc:'#92400E' },
+  { icon:'◈', title:'Budget tracker', desc:'See remaining budget update in real time as you browse. Color-coded: sage → amber → rust.', bg:'#F5F2EE', tc:'#0A0908' },
+  { icon:'◻', title:'Plain-English reasons', desc:"Every recommendation comes with a 2-sentence explanation of why it's right for your specific room.", bg:'#F5F2EE', tc:'#0A0908' },
+  { icon:'◑', title:'Free, always', desc:'Dwelliq earns a standard affiliate commission when you buy. Your interests and ours are perfectly aligned.', bg:'#F5F2EE', tc:'#0A0908' },
+];
+document.getElementById('features-grid').innerHTML = features.map((f, i) => `
+  <div class="glow-card feature-card scroll-reveal d${i % 4}">
+    <div class="glow-card-border"></div>
+    <div class="glow-card-inner">
+      <div class="feature-icon" style="background:${f.bg};color:${f.tc};">${f.icon}</div>
+      <div class="feature-title">${f.title}</div>
+      <div class="feature-desc">${f.desc}</div>
+    </div>
+  </div>
+`).join('');
+document.querySelectorAll('.glow-card.scroll-reveal').forEach(el => obs.observe(el));
+
+// ── Process steps
+const steps = [
+  { n:'01', title:'Set your budget', sub:'Slider from $500 to $10,000+. We allocate across categories intelligently.' },
+  { n:'02', title:'Pick your style direction', sub:'5 visual options with real room photography. Takes 5 seconds.' },
+  { n:'03', title:'Tell us your room', sub:'Dimensions, household type, how you use the space. 4 quick questions.' },
+  { n:'04', title:'Get your recommendations', sub:'Instant. Three options for every piece. Buy with one click.' },
+];
+document.getElementById('process-steps').innerHTML = steps.map((s, i) => `
+  <div class="process-step">
+    <div><span class="step-num">${s.n}</span></div>
+    <div class="step-content">
+      <div class="step-title">${s.title}</div>
+      <div class="step-sub">${s.sub}</div>
+    </div>
+  </div>
+`).join('');
+
+// ── Testimonials
+const testimonials = [
+  { name:'Maya R.', role:'First homeowner, Austin TX', quote:'I spent three weekends visiting furniture stores and left empty-handed every time. Dwelliq took 8 minutes and I bought my sofa the same day.', rating:5 },
+  { name:'James T.', role:'Real estate agent, NYC', quote:'I send every client the Dwelliq link right after closing. It\'s the single best thing I can do for them at that moment.', rating:5 },
+  { name:'Priya K.', role:'Interior designer, Jersey City', quote:'The local option card is my favorite. It surfaces boutiques I didn\'t even know existed in my neighborhood.', rating:5 },
+  { name:'David L.', role:'New homeowner, Brooklyn', quote:'Finally a tool that doesn\'t overwhelm you with 10,000 choices. Three options, clear reasons, done.', rating:5 },
+];
+let tidx = 0;
+const twrap = document.getElementById('testimonial-wrap');
+function renderTestimonials() {
+  twrap.innerHTML = testimonials.map((t, i) => `
+    <div class="testimonial-slide ${i===tidx?'active':''}" id="tslide-${i}">
+      <div class="stars">${'★'.repeat(t.rating)}</div>
+      <blockquote class="testimonial-quote">"${t.quote}"</blockquote>
+      <div class="testimonial-name">${t.name}</div>
+      <div class="testimonial-role">${t.role}</div>
+    </div>
+  `).join('') + `<div class="testimonial-dots">${testimonials.map((_,i) => `<span class="t-dot ${i===tidx?'active':''}" data-i="${i}"></span>`).join('')}</div>`;
+  twrap.querySelectorAll('.t-dot').forEach(d => {
+    d.addEventListener('click', () => { tidx = parseInt(d.dataset.i); renderTestimonials(); });
+  });
+}
+renderTestimonials();
+setInterval(() => { tidx = (tidx + 1) % testimonials.length; renderTestimonials(); }, 5000);
+
+// ── Competitors
+const comps = [
+  { name:'Pinterest', issue:'Inspiration. Zero product path.' },
+  { name:'Wayfair/Amazon', issue:'50,000 options. No design context.' },
+  { name:'IKEA Planner', issue:'One brand. No neutral advice.' },
+  { name:'Houzz/Havenly', issue:'$2,000–$15,000 per project.' },
+  { name:'RoomGPT', issue:'Pretty images. Nothing to buy.' },
+];
+document.getElementById('comp-list').innerHTML = comps.map(c => `
+  <div class="comp-row reveal-x">
+    <div class="comp-x"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1 1L7 7M7 1L1 7" stroke="#8B3A2A" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+    <span class="comp-name">${c.name}</span>
+    <span class="comp-issue">${c.issue}</span>
+  </div>
+`).join('') + `
+  <div class="dwelliq-row reveal-x d5">
+    <div class="dwelliq-check"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#FDFAF6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div>
+      <div class="dwelliq-name">Dwelliq</div>
+      <div class="dwelliq-desc">Free AI. Three options per piece. Local boutiques. Budget-aware.</div>
+    </div>
+    <a href="#start" class="try-link">Try free →</a>
+  </div>
+`;
+document.querySelectorAll('.reveal-x, .reveal-xr').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
