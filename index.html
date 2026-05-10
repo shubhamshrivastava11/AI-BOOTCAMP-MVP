@@ -36,7 +36,11 @@
       color: var(--cream);
       min-height: 100vh;
       overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
     }
+
+    a { color: inherit; }
 
     @keyframes rise { from { opacity:0; transform:translateY(32px); } to { opacity:1; transform:translateY(0); } }
     @keyframes shimmer { 0%,100% { background-position:0% 50%; } 50% { background-position:100% 50%; } }
@@ -44,146 +48,370 @@
     @keyframes cardFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
     @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.35; } }
 
-    /* ── Header ── */
-    header {
-      text-align: center;
-      padding: 100px 24px 72px;
+    /* Layout shell: header + sidebar + main */
+    #app-shell {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      grid-template-rows: auto 1fr;
+      min-height: 100vh;
+    }
+
+    header.site-header {
+      grid-column: 1 / 3;
+      background: rgba(10,9,8,.98);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-lockup {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,151,74,.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--gold);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-name {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      font-size: .7rem;
+      color: rgba(253,250,246,.45);
+    }
+
+    nav.main-nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: .8rem;
+    }
+
+    .nav-links, .auth-links {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: rgba(253,250,246,.7);
+      padding: 4px 0;
       position: relative;
+      font-size: .8rem;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      transition: width .2s ease;
+    }
+
+    .nav-link:hover::after { width: 100%; }
+
+    .auth-primary {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(201,151,74,.6);
+      background: rgba(201,151,74,.12);
+      color: var(--cream);
+      text-decoration: none;
+      font-size: .8rem;
+    }
+
+    .auth-secondary {
+      font-size: .8rem;
+      color: rgba(253,250,246,.6);
+      text-decoration: none;
+    }
+
+    .auth-secondary:hover { color: var(--gold); }
+
+    /* Sidebar */
+    aside#sidebar {
+      background: rgba(5,5,5,.96);
+      border-right: 1px solid rgba(255,255,255,.06);
+      padding: 20px 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .sidebar-section-label {
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: rgba(253,250,246,.35);
+      margin-bottom: 10px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: .8rem;
+    }
+
+    .sidebar-link {
+      text-decoration: none;
+      color: rgba(253,250,246,.6);
+      padding: 6px 8px;
+      border-radius: 6px;
+      transition: background .15s ease, color .15s ease;
+    }
+
+    .sidebar-link:hover {
+      background: rgba(201,151,74,.12);
+      color: var(--cream);
+    }
+
+    .sidebar-footnote {
+      font-size: .7rem;
+      color: rgba(253,250,246,.3);
+      line-height: 1.5;
+    }
+
+    /* Main content area */
+    main {
+      padding: 0;
+    }
+
+    /* ── Hero ── */
+    section#hero {
+      position: relative;
+      padding: 64px 48px 40px;
       overflow: hidden;
     }
-    .header-bg {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse at 50% 0%, rgba(201,151,74,.18) 0%, transparent 60%),
-        radial-gradient(ellipse at 20% 80%, rgba(74,106,88,.08) 0%, transparent 50%);
-    }
-    .header-ring {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 600px; height: 600px;
-      border-radius: 50%;
-      border: 1px solid rgba(201,151,74,.1);
-      animation: spin 40s linear infinite;
-      pointer-events: none;
-    }
-    .header-ring-2 {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 400px; height: 400px;
-      border-radius: 50%;
-      border: 1px dashed rgba(201,151,74,.08);
-      animation: spin 25s linear infinite reverse;
-      pointer-events: none;
-    }
-    .header-inner { position: relative; z-index: 10; }
 
-    .header-badge {
-      display: inline-flex;
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 40px;
       align-items: center;
-      gap: 8px;
-      border: 1px solid rgba(201,151,74,.3);
-      border-radius: 999px;
-      padding: 8px 20px;
-      margin-bottom: 32px;
-      background: rgba(201,151,74,.06);
-      backdrop-filter: blur(4px);
-      animation: rise .6s .1s both;
     }
-    .badge-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--gold);
-      animation: pulse 2s ease-in-out infinite;
+
+    .hero-text {
+      position: relative;
+      z-index: 10;
     }
-    .badge-text {
+
+    .hero-kicker {
       font-size: .75rem;
-      color: rgba(253,250,246,.6);
-      letter-spacing: .06em;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(253,250,246,.55);
+      margin-bottom: 12px;
     }
 
-    .header-logo {
+    .hero-heading {
       font-family: var(--serif);
-      font-size: clamp(56px, 10vw, 120px);
+      font-size: clamp(2.1rem, 3vw, 2.6rem);
       font-weight: 300;
-      letter-spacing: .04em;
-      margin-bottom: 8px;
-      background: linear-gradient(135deg, #FDFAF6 0%, #E8C88A 50%, #FDFAF6 100%);
-      background-size: 200% 200%;
-      animation: shimmer 6s ease infinite, rise .8s .2s both;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      margin-bottom: 14px;
     }
 
-    .header-sub {
-      font-family: var(--serif);
-      font-size: clamp(1rem, 2.5vw, 1.5rem);
-      font-weight: 300;
-      color: rgba(253,250,246,.4);
-      font-style: italic;
-      margin-bottom: 24px;
-      animation: rise .8s .35s both;
+    .hero-heading span {
+      color: var(--gold);
     }
 
-    .header-desc {
-      font-size: 1.1rem;
-      color: rgba(253,250,246,.5);
+    .hero-lede {
+      font-size: .95rem;
+      color: rgba(253,250,246,.55);
       line-height: 1.7;
-      max-width: 560px;
-      margin: 0 auto 24px;
-      animation: rise .8s .5s both;
-    }
-    .header-desc strong {
-      color: rgba(253,250,246,.8);
-      font-weight: 500;
+      margin-bottom: 20px;
+      max-width: 520px;
     }
 
-    .start-btn {
+    .hero-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .hero-primary-btn {
       display: inline-block;
-      margin-top: 8px;
-      margin-bottom: 32px;
-      padding: 12px 28px;
+      padding: 10px 22px;
       border-radius: 999px;
+      border: none;
       background: var(--gold);
       color: var(--ink);
-      font-size: 0.85rem;
+      font-size: .85rem;
       font-weight: 600;
-      letter-spacing: 0.12em;
+      letter-spacing: .12em;
       text-transform: uppercase;
       text-decoration: none;
+      cursor: pointer;
       box-shadow: 0 14px 30px rgba(0,0,0,.35);
       transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
     }
-    .start-btn:hover {
+    .hero-primary-btn:hover {
       background: #e8c88a;
-      transform: translateY(-2px);
+      transform: translateY(-1px);
       box-shadow: 0 18px 40px rgba(0,0,0,.45);
     }
 
-    .header-pills {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      animation: rise .8s .65s both;
+    .hero-secondary-link {
+      font-size: .8rem;
+      color: rgba(253,250,246,.6);
+      text-decoration: none;
     }
-    .header-pill {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(253,250,246,.05);
-      border: 1px solid rgba(204,200,192,.2);
-      border-radius: 999px;
-      padding: 6px 14px;
-      font-size: .75rem;
-      color: rgba(253,250,246,.5);
-    }
-    .header-pill .tick { color: var(--sage); }
+    .hero-secondary-link:hover { color: var(--gold); }
 
-    /* ── Divider ── */
+    .hero-meta {
+      font-size: .75rem;
+      color: rgba(253,250,246,.4);
+    }
+
+    .hero-image {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(204,200,192,.18);
+      background: radial-gradient(circle at 0 0, rgba(201,151,74,.2), transparent 50%),
+                  radial-gradient(circle at 100% 100%, rgba(74,106,88,.18), transparent 50%);
+      min-height: 260px;
+    }
+
+    .hero-image::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(201,151,74,.35), transparent 55%),
+        radial-gradient(circle at 0 100%, rgba(10,9,8,.9), transparent 55%);
+      opacity: .5;
+      pointer-events: none;
+    }
+
+    .hero-image-content {
+      position: relative;
+      z-index: 5;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px 18px 18px;
+    }
+
+    .hero-image-text {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .hero-image-title {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 300;
+    }
+
+    .hero-image-pill {
+      font-size: .7rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(253,250,246,.3);
+      background: rgba(10,9,8,.7);
+    }
+
+    .hero-image-text-overlay {
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: rgba(10,9,8,.78);
+      border: 1px solid rgba(255,255,255,.12);
+      margin-bottom: 10px;
+    }
+
+    .hero-image-text-overlay-text {
+      font-size: .78rem;
+      color: rgba(253,250,246,.7);
+      line-height: 1.6;
+    }
+
+    .hero-mini-metrics {
+      display: flex;
+      gap: 14px;
+      font-size: .7rem;
+      color: rgba(253,250,246,.6);
+    }
+
+    .hero-metric-label {
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: .6rem;
+      color: rgba(253,250,246,.45);
+      margin-bottom: 2px;
+    }
+
+    .hero-metric-value {
+      font-family: var(--mono);
+      font-size: .8rem;
+    }
+
+    @media (max-width: 960px) {
+      #app-shell {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto 1fr;
+      }
+      aside#sidebar {
+        grid-row: 2;
+        flex-direction: row;
+        flex-wrap: wrap;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,.06);
+      }
+      main {
+        grid-row: 3;
+      }
+      .hero-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width:720px) {
+      nav.main-nav {
+        display: none; /* keep it simple for now on small screens */
+      }
+      header.site-header {
+        justify-content: center;
+      }
+    }
+
+    /* Divider between hero and cards */
     .divider {
       border: none;
       height: 1px;
@@ -196,7 +424,7 @@
       margin: 0 48px;
     }
 
-    /* ── Cards section ── */
+    /* Cards section (versions) */
     .cards-section {
       padding: 80px 32px 100px;
       max-width: 1280px;
@@ -347,7 +575,7 @@
     }
     .version-card:hover .vc-glow { transform: scaleX(1); }
 
-    /* ── How it works strip ── */
+    /* How it works */
     .how-strip {
       background: rgba(255,255,255,.03);
       border-top: 1px solid rgba(204,200,192,.1);
@@ -380,7 +608,6 @@
     @media (max-width:480px) {
       .how-steps { grid-template-columns: 1fr; }
     }
-    .how-step {}
     .how-num {
       font-family: var(--mono);
       font-size: .7rem;
@@ -400,224 +627,330 @@
       line-height: 1.65;
     }
 
-    /* ── Footer ── */
-    footer {
-      padding: 48px;
+    /* Footer */
+    footer.site-footer {
+      padding: 32px 48px 40px;
       border-top: 1px solid rgba(255,255,255,.06);
       text-align: center;
+      background: rgba(5,5,5,.98);
     }
     @media (max-width:640px) {
-      footer { padding: 48px 20px; }
+      footer.site-footer { padding: 32px 20px 40px; }
     }
+    .footer-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 18px;
+      font-size: .8rem;
+    }
+    .footer-link {
+      color: rgba(253,250,246,.5);
+      text-decoration: none;
+    }
+    .footer-link:hover { color: rgba(253,250,246,.8); }
     .ft-logo {
       font-family: var(--serif);
       font-size: 1.5rem;
       font-weight: 300;
-      color: rgba(253,250,246,.5);
-      margin-bottom: 8px;
+      color: rgba(253,250,246,.6);
+      margin-bottom: 6px;
     }
     .ft-tagline {
       font-size: .75rem;
-      color: rgba(253,250,246,.2);
-      margin-bottom: 24px;
+      color: rgba(253,250,246,.3);
+      margin-bottom: 10px;
     }
-    .ft-links {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      flex-wrap: wrap;
-    }
-    .ft-link {
-      font-size: .75rem;
-      color: rgba(253,250,246,.25);
-      text-decoration: none;
-      transition: color .2s;
-    }
-    .ft-link:hover { color: rgba(253,250,246,.55); }
     .ft-copy {
       font-size: .7rem;
-      color: rgba(253,250,246,.15);
-      margin-top: 24px;
+      color: rgba(253,250,246,.2);
+      margin-top: 6px;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="header-bg"></div>
-  <div class="header-ring"></div>
-  <div class="header-ring-2"></div>
-  <div class="header-inner">
-    <div class="header-badge">
-      <span class="badge-dot"></span>
-      <span class="badge-text">AI Home Styling Advisor · MVP</span>
+<div id="app-shell">
+  <!-- HEADER -->
+  <header class="site-header" id="header">
+    <div class="brand-lockup">
+      <div class="brand-mark">DQ</div>
+      <div class="brand-text">
+        <div class="brand-name">dwelliq</div>
+        <div class="brand-sub">AI Home Styling Advisor</div>
+      </div>
     </div>
-    <h1 class="header-logo">dwelliq</h1>
-    <p class="header-sub">Three options. Every piece. Always free.</p>
-    <p class="header-desc">
-      Tell us your room, budget, and style.
-      Get <strong>three specific, purchasable furniture recommendations</strong> for every single piece —
-      best within budget, best if flexible, best from a local boutique near you.
+
+    <nav class="main-nav" id="nav">
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="blog.html" class="nav-link">Blog</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="help.html" class="nav-link">Help</a>
+        <a href="support.html" class="nav-link">Support</a>
+      </div>
+      <div class="auth-links">
+        <a href="login.html" class="auth-secondary">Login</a>
+        <a href="register.html" class="auth-primary">Sign up</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" aria-label="Sidebar navigation">
+    <div>
+      <div class="sidebar-section-label">Pages</div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="sidebar-link">Home</a>
+        <a href="architecture.html" class="sidebar-link">Architecture</a>
+        <a href="portfolio.html" class="sidebar-link">Portfolio</a>
+        <a href="v3-warm-organic.html" class="sidebar-link">V3 — Warm Organic</a>
+        <a href="v4-spotlight.html" class="sidebar-link">V4 — Spotlight</a>
+        <a href="v5-luxury-magazine.html" class="sidebar-link">V5 — Luxury Magazine</a>
+      </nav>
+    </div>
+
+    <div>
+      <div class="sidebar-section-label">Account</div>
+      <nav class="sidebar-nav">
+        <a href="login.html" class="sidebar-link">Login / Sign in</a>
+        <a href="register.html" class="sidebar-link">Register / Sign up</a>
+        <a href="logout.html" class="sidebar-link">Logout</a>
+      </nav>
+    </div>
+
+    <div>
+      <div class="sidebar-section-label">Legal</div>
+      <nav class="sidebar-nav">
+        <a href="privacy.html" class="sidebar-link">Privacy policy</a>
+        <a href="terms.html" class="sidebar-link">Terms &amp; conditions</a>
+        <a href="cookies.html" class="sidebar-link">Cookie policy</a>
+      </nav>
+    </div>
+
+    <p class="sidebar-footnote">
+      Dwelliq is an MVP concept. Links like Login, Register, Blog and Support can later be wired to real back‑end flows or external tools.
     </p>
+  </aside>
 
-    <!-- Start designing button → V3 page -->
-    <a href="v3-warm-organic.html" class="start-btn">
-      Start designing
-    </a>
+  <!-- MAIN -->
+  <main>
+    <!-- HERO -->
+    <section id="hero">
+      <div class="hero-inner">
+        <div class="hero-text" id="hero-text">
+          <div class="hero-kicker">AI BOOTCAMP · MVP</div>
+          <h1 class="hero-heading">
+            Turn your room into a <span>designed space</span> in one session.
+          </h1>
+          <p class="hero-lede">
+            Dwelliq is your AI home styling advisor. Describe your room, style and budget;
+            we return three shoppable options for every piece — within budget, best if flexible,
+            and a local boutique pick.
+          </p>
 
-    <div class="header-pills">
-      <span class="header-pill"><span class="tick">✓</span> Free for homeowners</span>
-      <span class="header-pill"><span class="tick">✓</span> No account required</span>
-      <span class="header-pill"><span class="tick">✓</span> 3 options per piece</span>
-      <span class="header-pill"><span class="tick">✓</span> Local boutiques included</span>
+          <div class="hero-cta-row">
+            <a href="v3-warm-organic.html" class="hero-primary-btn" id="start-designing-btn">
+              Start designing
+            </a>
+            <a href="architecture.html" class="hero-secondary-link">View product architecture →</a>
+          </div>
+
+          <p class="hero-meta">
+            No login required to try the demo. Ready to save a room? Create an account to keep your layouts.
+          </p>
+        </div>
+
+        <div class="hero-image" id="hero-image">
+          <div class="hero-image-content">
+            <div class="hero-image-text" id="hero-image-text">
+              <div>
+                <div class="hero-image-title">Tonight’s styling session</div>
+                <div class="hero-metric-label">MVP · EdgeOne + GitHub Pages</div>
+              </div>
+              <div class="hero-image-pill">Live prototype</div>
+            </div>
+
+            <div class="hero-image-text-overlay" id="hero-image-text-overlay">
+              <p class="hero-image-text-overlay-text" id="hero-image-text-overlay-text">
+                “We ask four questions, then generate a shopping list that feels like it came
+                from a human designer — curated by budget, style and distance from your postcode.”
+              </p>
+            </div>
+
+            <div class="hero-mini-metrics">
+              <div>
+                <div class="hero-metric-label">Pieces per room</div>
+                <div class="hero-metric-value">12–18 recs</div>
+              </div>
+              <div>
+                <div class="hero-metric-label">Options per piece</div>
+                <div class="hero-metric-value">3 · A/B/C</div>
+              </div>
+              <div>
+                <div class="hero-metric-label">Affiliate first</div>
+                <div class="hero-metric-value">0 upfront fee</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- VERSION CARDS -->
+    <div class="cards-section">
+      <p class="cards-label">Choose a design direction</p>
+      <div class="cards-grid">
+        <!-- V3 -->
+        <a href="v3-warm-organic.html" class="version-card">
+          <div class="vc-preview">
+            <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80"
+                 alt="Warm Organic" loading="lazy" />
+            <div class="vc-overlay"
+                 style="background:linear-gradient(to bottom,transparent 40%,rgba(10,9,8,.9) 100%);"></div>
+            <span class="vc-version-tag">Version 3</span>
+          </div>
+          <div class="vc-glow" style="background:linear-gradient(to right,#C9974A,#E8C88A);"></div>
+          <div class="vc-body">
+            <h2 class="vc-name">Warm Organic</h2>
+            <p class="vc-tagline">"Your room, intentionally designed."</p>
+            <div class="vc-features">
+              <span class="vc-feat">CSS Floor Plan</span>
+              <span class="vc-feat">Clip-path reveals</span>
+              <span class="vc-feat">Accordion steps</span>
+              <span class="vc-feat">Style carousel</span>
+              <span class="vc-feat">Parallax hero</span>
+            </div>
+            <div class="vc-cta">
+              <span class="vc-cta-label">View design →</span>
+              <span class="vc-arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- V4 -->
+        <a href="v4-spotlight.html" class="version-card" style="animation-delay:.8s;">
+          <div class="vc-preview">
+            <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=800&q=80"
+                 alt="Spotlight" loading="lazy" />
+            <div class="vc-overlay"
+                 style="background:linear-gradient(to bottom,transparent 40%,rgba(10,9,8,.9) 100%);"></div>
+            <span class="vc-version-tag">Version 4</span>
+          </div>
+          <div class="vc-glow" style="background:linear-gradient(to right,#7B68C8,#C9974A);"></div>
+          <div class="vc-body">
+            <h2 class="vc-name">Spotlight</h2>
+            <p class="vc-tagline">"Stop guessing. Start knowing what to buy."</p>
+            <div class="vc-features">
+              <span class="vc-feat">Cursor spotlight</span>
+              <span class="vc-feat">Live product demo</span>
+              <span class="vc-feat">Animated border</span>
+              <span class="vc-feat">Number ticker</span>
+              <span class="vc-feat">Testimonials</span>
+            </div>
+            <div class="vc-cta">
+              <span class="vc-cta-label">View design →</span>
+              <span class="vc-arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- V5 -->
+        <a href="v5-luxury-magazine.html" class="version-card" style="animation-delay:1.6s;">
+          <div class="vc-preview">
+            <img src="https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&q=80"
+                 alt="Luxury Magazine" loading="lazy" />
+            <div class="vc-overlay"
+                 style="background:linear-gradient(to bottom,transparent 40%,rgba(10,9,8,.9) 100%);"></div>
+            <span class="vc-version-tag">Version 5</span>
+          </div>
+          <div class="vc-glow" style="background:linear-gradient(to right,#C9974A,#8B7355);"></div>
+          <div class="vc-body">
+            <h2 class="vc-name">Luxury Magazine</h2>
+            <p class="vc-tagline">"Stop guessing. Start buying with confidence."</p>
+            <div class="vc-features">
+              <span class="vc-feat">Aurora gradient</span>
+              <span class="vc-feat">Text scramble</span>
+              <span class="vc-feat">Drag gallery</span>
+              <span class="vc-feat">Budget calculator</span>
+              <span class="vc-feat">Floating cards</span>
+            </div>
+            <div class="vc-cta">
+              <span class="vc-cta-label">View design →</span>
+              <span class="vc-arrow">→</span>
+            </div>
+          </div>
+        </a>
+      </div>
     </div>
-  </div>
-</header>
 
-<hr class="divider" />
-
-<div class="cards-section">
-  <p class="cards-label">Choose a design direction</p>
-  <div class="cards-grid">
-
-    <!-- V3 -->
-    <a href="v3-warm-organic.html" class="version-card">
-      <div class="vc-preview">
-        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80"
-             alt="Warm Organic" loading="lazy" />
-        <div class="vc-overlay"
-             style="background:linear-gradient(to bottom,transparent 40%,rgba(10,9,8,.9) 100%);"></div>
-        <span class="vc-version-tag">Version 3</span>
-      </div>
-      <div class="vc-glow" style="background:linear-gradient(to right,#C9974A,#E8C88A);"></div>
-      <div class="vc-body">
-        <h2 class="vc-name">Warm Organic</h2>
-        <p class="vc-tagline">"Your room, intentionally designed."</p>
-        <div class="vc-features">
-          <span class="vc-feat">CSS Floor Plan</span>
-          <span class="vc-feat">Clip-path reveals</span>
-          <span class="vc-feat">Accordion steps</span>
-          <span class="vc-feat">Style carousel</span>
-          <span class="vc-feat">Parallax hero</span>
-        </div>
-        <div class="vc-cta">
-          <span class="vc-cta-label">View design →</span>
-          <span class="vc-arrow">→</span>
-        </div>
-      </div>
-    </a>
-
-    <!-- V4 -->
-    <a href="v4-spotlight.html" class="version-card" style="animation-delay:.8s;">
-      <div class="vc-preview">
-        <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=800&q=80"
-             alt="Spotlight" loading="lazy" />
-        <div class="vc-overlay"
-             style="background:linear-gradient(to bottom,transparent 40%,rgba(10,9,8,.9) 100%);"></div>
-        <span class="vc-version-tag">Version 4</span>
-      </div>
-      <div class="vc-glow" style="background:linear-gradient(to right,#7B68C8,#C9974A);"></div>
-      <div class="vc-body">
-        <h2 class="vc-name">Spotlight</h2>
-        <p class="vc-tagline">"Stop guessing. Start knowing what to buy."</p>
-        <div class="vc-features">
-          <span class="vc-feat">Cursor spotlight</span>
-          <span class="vc-feat">Live product demo</span>
-          <span class="vc-feat">Animated border</span>
-          <span class="vc-feat">Number ticker</span>
-          <span class="vc-feat">Testimonials</span>
-        </div>
-        <div class="vc-cta">
-          <span class="vc-cta-label">View design →</span>
-          <span class="vc-arrow">→</span>
+    <!-- HOW IT WORKS -->
+    <div class="how-strip">
+      <div class="how-inner">
+        <p class="how-label">How Dwelliq works</p>
+        <div class="how-steps">
+          <div class="how-step">
+            <div class="how-num">01</div>
+            <div class="how-title">Set your budget</div>
+            <div class="how-desc">
+              Slide to your total room budget. We allocate across categories intelligently —
+              35% to the sofa, 15% to the rug, and so on.
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="how-num">02</div>
+            <div class="how-title">Pick your style</div>
+            <div class="how-desc">
+              Five visual directions with real room photography. Warm Mid-Century, Scandi Minimal,
+              Earthy Organic, Modern Glam, Eclectic Maximalist.
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="how-num">03</div>
+            <div class="how-title">Tell us your room</div>
+            <div class="how-desc">
+              Room size, household type, how you use the space, and your postcode for local Option C.
+              Four quick questions.
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="how-num">04</div>
+            <div class="how-title">Get recommendations</div>
+            <div class="how-desc">
+              Instant. Three options for every piece — within budget, best if flexible,
+              and a boutique near you. Click to buy.
+            </div>
+          </div>
         </div>
       </div>
-    </a>
-
-    <!-- V5 -->
-    <a href="v5-luxury-magazine.html" class="version-card" style="animation-delay:1.6s;">
-      <div class="vc-preview">
-        <img src="https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&q=80"
-             alt="Luxury Magazine" loading="lazy" />
-        <div class="vc-overlay"
-             style="background:linear-gradient(to bottom,transparent 40%,rgba(10,9,8,.9) 100%);"></div>
-        <span class="vc-version-tag">Version 5</span>
-      </div>
-      <div class="vc-glow" style="background:linear-gradient(to right,#C9974A,#8B7355);"></div>
-      <div class="vc-body">
-        <h2 class="vc-name">Luxury Magazine</h2>
-        <p class="vc-tagline">"Stop guessing. Start buying with confidence."</p>
-        <div class="vc-features">
-          <span class="vc-feat">Aurora gradient</span>
-          <span class="vc-feat">Text scramble</span>
-          <span class="vc-feat">Drag gallery</span>
-          <span class="vc-feat">Budget calculator</span>
-          <span class="vc-feat">Floating cards</span>
-        </div>
-        <div class="vc-cta">
-          <span class="vc-cta-label">View design →</span>
-          <span class="vc-arrow">→</span>
-        </div>
-      </div>
-    </a>
-
-  </div>
+    </div>
+  </main>
 </div>
 
-<div class="how-strip">
-  <div class="how-inner">
-    <p class="how-label">How Dwelliq works</p>
-    <div class="how-steps">
-      <div class="how-step">
-        <div class="how-num">01</div>
-        <div class="how-title">Set your budget</div>
-        <div class="how-desc">
-          Slide to your total room budget. We allocate across categories intelligently —
-          35% to the sofa, 15% to the rug, and so on.
-        </div>
-      </div>
-      <div class="how-step">
-        <div class="how-num">02</div>
-        <div class="how-title">Pick your style</div>
-        <div class="how-desc">
-          Five visual directions with real room photography. Warm Mid-Century, Scandi Minimal,
-          Earthy Organic, Modern Glam, Eclectic Maximalist.
-        </div>
-      </div>
-      <div class="how-step">
-        <div class="how-num">03</div>
-        <div class="how-title">Tell us your room</div>
-        <div class="how-desc">
-          Room size, household type, how you use the space, and your postcode for local Option C.
-          Four quick questions.
-        </div>
-      </div>
-      <div class="how-step">
-        <div class="how-num">04</div>
-        <div class="how-title">Get recommendations</div>
-        <div class="how-desc">
-          Instant. Three options for every piece — within budget, best if flexible,
-          and a boutique near you. Click to buy.
-        </div>
-      </div>
-    </div>
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <a href="about.html" class="footer-link">About</a>
+    <a href="contact.html" class="footer-link">Contact</a>
+    <a href="blog.html" class="footer-link">Blog</a>
+    <a href="faq.html" class="footer-link">FAQ</a>
+    <a href="help.html" class="footer-link">Help</a>
+    <a href="support.html" class="footer-link">Support</a>
+    <a href="privacy.html" class="footer-link">Privacy</a>
+    <a href="terms.html" class="footer-link">Terms &amp; Conditions</a>
+    <a href="cookies.html" class="footer-link">Cookie policy</a>
   </div>
-</div>
-
-<footer>
   <div class="ft-logo">dwelliq</div>
   <div class="ft-tagline">
     AI Home Styling Advisor · Affiliate-first · Free for homeowners
   </div>
-  <div class="ft-links">
-    <a href="v3-warm-organic.html" class="ft-link">V3 — Warm Organic</a>
-    <a href="v4-spotlight.html" class="ft-link">V4 — Spotlight</a>
-    <a href="v5-luxury-magazine.html" class="ft-link">V5 — Luxury Magazine</a>
-    <a href="architecture.html" class="ft-link">Architecture</a>
-    <a href="portfolio.html" class="ft-link">Portfolio</a>
-  </div>
   <div class="ft-copy">
-    © 2026 Dwelliq · Built from PRD · Affiliate commissions fund this product
+    © 2026 Dwelliq · Built from PRD · This is an MVP hosted on GitHub Pages.
   </div>
 </footer>
 
