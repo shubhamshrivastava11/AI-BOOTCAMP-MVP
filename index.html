@@ -5,13 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dwelliq — AI Home Styling Advisor</title>
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
+  <!-- Google Fonts - -->
+  //fonts.googleapis.com" />
+  //fonts.gstatic.com" crossorigin />
+  //fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
     rel="stylesheet"
   />
+
+  <!-- Framer Motion (UMD) + Lucide icons -->
+  <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.umd.js" defer></script>
+  <script src="https://unpkg.com/lucide@latest" defer></script>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,7 +35,7 @@
     html { scroll-behavior: smooth; }
     body {
       font-family: var(--sans);
-      background: var(--ink);
+      background: radial-gradient(circle at top, #1c1307 0, #050505 50%, #020202 100%);
       color: var(--cream);
       min-height: 100vh;
       overflow-x: hidden;
@@ -45,15 +48,29 @@
     @keyframes rise { from { opacity:0; transform:translateY(32px); } to { opacity:1; transform:translateY(0); } }
     @keyframes shimmer { 0%,100% { background-position:0% 50%; } 50% { background-position:100% 50%; } }
     @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-    @keyframes cardFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
     @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.35; } }
 
-    /* Layout shell: header + sidebar + main */
+    /* --- Floating Anti-Gravity Physics --- */
+    @keyframes float {
+      0%   { transform: translateY(0px) rotate(0deg); }
+      33%  { transform: translateY(-10px) rotate(0.5deg); }
+      66%  { transform: translateY(-5px) rotate(-0.5deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+
+    @keyframes nebula-pulse {
+      0%   { box-shadow: 0 0 20px rgba(201,151,74,0.05); }
+      50%  { box-shadow: 0 0 50px rgba(201,151,74,0.15); }
+      100% { box-shadow: 0 0 20px rgba(201,151,74,0.05); }
+    }
+
+    /* Layout shell: header + sidebar + main, with perspective */
     #app-shell {
       display: grid;
       grid-template-columns: 260px 1fr;
       grid-template-rows: auto 1fr;
       min-height: 100vh;
+      perspective: 1200px; /* Essential for anti-gravity 3D feel */
     }
 
     header.site-header {
@@ -67,6 +84,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
+      backdrop-filter: blur(18px);
     }
 
     .brand-lockup {
@@ -74,7 +92,6 @@
       align-items: center;
       gap: 10px;
     }
-
     .brand-mark {
       width: 28px;
       height: 28px;
@@ -86,21 +103,15 @@
       font-family: var(--mono);
       font-size: .7rem;
       color: var(--gold);
+      background: radial-gradient(circle at 30% 0%, rgba(201,151,74,.25), transparent 60%);
     }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
+    .brand-text { display: flex; flex-direction: column; gap: 2px; }
     .brand-name {
       font-family: var(--serif);
       font-size: 1.2rem;
       letter-spacing: .08em;
       text-transform: uppercase;
     }
-
     .brand-sub {
       font-size: .7rem;
       color: rgba(253,250,246,.45);
@@ -112,13 +123,11 @@
       gap: 18px;
       font-size: .8rem;
     }
-
     .nav-links, .auth-links {
       display: flex;
       align-items: center;
       gap: 14px;
     }
-
     .nav-link {
       text-decoration: none;
       color: rgba(253,250,246,.7);
@@ -126,7 +135,6 @@
       position: relative;
       font-size: .8rem;
     }
-
     .nav-link::after {
       content: "";
       position: absolute;
@@ -137,7 +145,6 @@
       background: var(--gold);
       transition: width .2s ease;
     }
-
     .nav-link:hover::after { width: 100%; }
 
     .auth-primary {
@@ -149,13 +156,11 @@
       text-decoration: none;
       font-size: .8rem;
     }
-
     .auth-secondary {
       font-size: .8rem;
       color: rgba(253,250,246,.6);
       text-decoration: none;
     }
-
     .auth-secondary:hover { color: var(--gold); }
 
     /* Sidebar */
@@ -167,7 +172,6 @@
       flex-direction: column;
       gap: 32px;
     }
-
     .sidebar-section-label {
       font-size: .7rem;
       text-transform: uppercase;
@@ -175,14 +179,12 @@
       color: rgba(253,250,246,.35);
       margin-bottom: 10px;
     }
-
     .sidebar-nav {
       display: flex;
       flex-direction: column;
       gap: 6px;
       font-size: .8rem;
     }
-
     .sidebar-link {
       text-decoration: none;
       color: rgba(253,250,246,.6);
@@ -190,12 +192,10 @@
       border-radius: 6px;
       transition: background .15s ease, color .15s ease;
     }
-
     .sidebar-link:hover {
       background: rgba(201,151,74,.12);
       color: var(--cream);
     }
-
     .sidebar-footnote {
       font-size: .7rem;
       color: rgba(253,250,246,.3);
@@ -204,28 +204,25 @@
 
     /* Main content area */
     main {
-      padding: 0;
+      transform-style: preserve-3d;
     }
 
-    /* ── Hero ── */
+    /* HERO */
     section#hero {
       position: relative;
       padding: 64px 48px 40px;
       overflow: hidden;
     }
-
     .hero-inner {
       display: grid;
       grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
       gap: 40px;
       align-items: center;
     }
-
     .hero-text {
       position: relative;
       z-index: 10;
     }
-
     .hero-kicker {
       font-size: .75rem;
       letter-spacing: .16em;
@@ -233,18 +230,13 @@
       color: rgba(253,250,246,.55);
       margin-bottom: 12px;
     }
-
     .hero-heading {
       font-family: var(--serif);
       font-size: clamp(2.1rem, 3vw, 2.6rem);
       font-weight: 300;
       margin-bottom: 14px;
     }
-
-    .hero-heading span {
-      color: var(--gold);
-    }
-
+    .hero-heading span { color: var(--gold); }
     .hero-lede {
       font-size: .95rem;
       color: rgba(253,250,246,.55);
@@ -252,7 +244,6 @@
       margin-bottom: 20px;
       max-width: 520px;
     }
-
     .hero-cta-row {
       display: flex;
       flex-wrap: wrap;
@@ -260,7 +251,6 @@
       gap: 10px;
       margin-bottom: 16px;
     }
-
     .hero-primary-btn {
       display: inline-block;
       padding: 10px 22px;
@@ -282,14 +272,12 @@
       transform: translateY(-1px);
       box-shadow: 0 18px 40px rgba(0,0,0,.45);
     }
-
     .hero-secondary-link {
       font-size: .8rem;
       color: rgba(253,250,246,.6);
       text-decoration: none;
     }
     .hero-secondary-link:hover { color: var(--gold); }
-
     .hero-meta {
       font-size: .75rem;
       color: rgba(253,250,246,.4);
@@ -303,8 +291,9 @@
       background: radial-gradient(circle at 0 0, rgba(201,151,74,.2), transparent 50%),
                   radial-gradient(circle at 100% 100%, rgba(74,106,88,.18), transparent 50%);
       min-height: 260px;
+      box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
     }
-
     .hero-image::before {
       content: "";
       position: absolute;
@@ -315,7 +304,6 @@
       opacity: .5;
       pointer-events: none;
     }
-
     .hero-image-content {
       position: relative;
       z-index: 5;
@@ -325,7 +313,6 @@
       justify-content: space-between;
       padding: 20px 18px 18px;
     }
-
     .hero-image-text {
       display: flex;
       justify-content: space-between;
@@ -333,13 +320,11 @@
       align-items: flex-start;
       margin-bottom: 12px;
     }
-
     .hero-image-title {
       font-family: var(--serif);
       font-size: 1.3rem;
       font-weight: 300;
     }
-
     .hero-image-pill {
       font-size: .7rem;
       padding: 4px 10px;
@@ -347,28 +332,25 @@
       border: 1px solid rgba(253,250,246,.3);
       background: rgba(10,9,8,.7);
     }
-
     .hero-image-text-overlay {
       border-radius: 16px;
       padding: 12px 14px;
       background: rgba(10,9,8,.78);
       border: 1px solid rgba(255,255,255,.12);
       margin-bottom: 10px;
+      backdrop-filter: blur(15px);
     }
-
     .hero-image-text-overlay-text {
       font-size: .78rem;
       color: rgba(253,250,246,.7);
       line-height: 1.6;
     }
-
     .hero-mini-metrics {
       display: flex;
       gap: 14px;
       font-size: .7rem;
       color: rgba(253,250,246,.6);
     }
-
     .hero-metric-label {
       text-transform: uppercase;
       letter-spacing: .14em;
@@ -376,7 +358,6 @@
       color: rgba(253,250,246,.45);
       margin-bottom: 2px;
     }
-
     .hero-metric-value {
       font-family: var(--mono);
       font-size: .8rem;
@@ -394,21 +375,14 @@
         border-right: none;
         border-bottom: 1px solid rgba(255,255,255,.06);
       }
-      main {
-        grid-row: 3;
-      }
-      .hero-inner {
-        grid-template-columns: 1fr;
-      }
+      main { grid-row: 3; }
+      .hero-inner { grid-template-columns: 1fr; }
     }
 
     @media (max-width:720px) {
-      nav.main-nav {
-        display: none; /* keep it simple for now on small screens */
-      }
-      header.site-header {
-        justify-content: center;
-      }
+      nav.main-nav { display: none; }
+      header.site-header { justify-content: center; }
+      section#hero { padding: 40px 20px 32px; }
     }
 
     /* Divider between hero and cards */
@@ -453,25 +427,28 @@
 
     .version-card {
       border-radius: 20px;
-      overflow: hidden;
-      border: 1px solid rgba(204,200,192,.12);
-      background: rgba(255,255,255,.03);
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       cursor: pointer;
-      transition: all .4s cubic-bezier(.34,1.56,.64,1);
+      transition: all 0.35s cubic-bezier(.34,1.56,.64,1);
       text-decoration: none;
       display: block;
       position: relative;
-      animation: cardFloat 6s ease-in-out infinite;
+      transform-style: preserve-3d;
+      will-change: transform;
+      animation: float 8s ease-in-out infinite;
+      animation-timing-function: ease-in-out;
     }
-    .version-card:nth-child(2) { animation-delay: .8s; }
-    .version-card:nth-child(3) { animation-delay: 1.6s; }
+    .version-card:nth-child(2) { animation-duration: 9s; animation-delay: -2s; }
+    .version-card:nth-child(3) { animation-duration: 7s; animation-delay: -4s; }
 
     .version-card:hover {
-      transform: translateY(-12px) scale(1.02);
-      border-color: rgba(201,151,74,.4);
-      box-shadow:
-        0 32px 80px rgba(0,0,0,.4),
-        0 0 40px rgba(201,151,74,.08);
+      animation-play-state: paused;
+      transform: translateY(-20px) scale(1.04) rotateX(5deg);
+      border-color: var(--gold);
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.65);
     }
 
     .vc-preview {
@@ -753,14 +730,15 @@
           </p>
 
           <div class="hero-cta-row">
-            <a href="v3-warm-organic.html" class="hero-primary-btn" id="start-designing-btn">
+            <a href="v3-warm-organic.html" class="hero-primary-btn">
               Start designing
             </a>
             <a href="architecture.html" class="hero-secondary-link">View product architecture →</a>
           </div>
 
           <p class="hero-meta">
-            No login required to try the demo. Ready to save a room? Create an account to keep your layouts.
+            No login required to try the demo. Create an account later to save layouts, share rooms,
+            and collaborate with a designer in real time.
           </p>
         </div>
 
@@ -953,6 +931,76 @@
     © 2026 Dwelliq · Built from PRD · This is an MVP hosted on GitHub Pages.
   </div>
 </footer>
+
+<!-- Framer Motion anti-gravity interactions -->
+<script>
+  window.addEventListener('load', () => {
+    const FM = window.FramerMotion;
+    if (!FM) return;
+    const { animate, scroll } = FM;
+
+    // 1. Initial entrance reveal for hero text
+    const heroChildren = document.querySelectorAll('.hero-text > *');
+    heroChildren.forEach((el, i) => {
+      animate(el,
+        { opacity: [0, 1], y: [40, 0] },
+        { delay: i * 0.15, duration: 0.8, ease: "easeOut" }
+      );
+    });
+
+    // 2. Anti-gravity parallax on hero image
+    const heroImage = document.querySelector('#hero-image');
+    if (heroImage) {
+      window.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth) - 0.5;
+        const y = (e.clientY / window.innerHeight) - 0.5;
+
+        animate(heroImage, {
+          x: x * 30,
+          y: y * 30,
+          rotateX: -y * 10,
+          rotateY: x * 10,
+        }, { type: "spring", stiffness: 100, damping: 20 });
+      });
+    }
+
+    // 3. Scroll-linked scaling on cards section
+    const cardsSection = document.querySelector('.cards-section');
+    if (cardsSection && scroll) {
+      scroll(
+        animate(cardsSection, {
+          opacity: [0.5, 1],
+          scale: [0.95, 1]
+        }),
+        { offset: ["start end", "center center"] }
+      );
+    }
+
+    // 4. Magnetic button effect
+    const btn = document.querySelector('.hero-primary-btn');
+    if (btn) {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+
+        animate(btn, { x: x * 0.3, y: y * 0.3 }, {
+          type: "spring",
+          stiffness: 200,
+          damping: 20
+        });
+      });
+
+      btn.addEventListener('mouseleave', () => {
+        animate(btn, { x: 0, y: 0 }, {
+          type: "spring",
+          stiffness: 300,
+          damping: 25
+        });
+      });
+    }
+  });
+</script>
 
 </body>
 </html>
