@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact · Dwelliq</title>
+  //fonts.googleapis.com" />
+  //fonts.gstatic.com" crossorigin n />
+  //fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --cream: #FDFAF6;
+      --ink: #050506;
+      --gold: #C9974A;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--sans);
+      background: radial-gradient(circle at top, #1a1207 0, #050506 45%, #020203 100%);
+      color: var(--cream);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 16px 32px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      font-family: var(--serif);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-size: 1rem;
+    }
+    .brand span { color: var(--gold); }
+    nav a {
+      font-size: .8rem;
+      color: rgba(253,250,246,.7);
+      text-decoration: none;
+      margin-left: 16px;
+    }
+    nav a:hover { color: var(--gold); }
+    main {
+      flex: 1;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+    p {
+      font-size: .95rem;
+      line-height: 1.7;
+      color: rgba(253,250,246,.75);
+      margin-bottom: 12px;
+    }
+    form {
+      margin-top: 16px;
+      display: grid;
+      gap: 12px;
+    }
+    label {
+      font-size: .8rem;
+      color: rgba(253,250,246,.7);
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(5,5,6,.8);
+      color: var(--cream);
+      font-family: var(--sans);
+      font-size: .9rem;
+    }
+    textarea { min-height: 120px; resize: vertical; }
+    button {
+      margin-top: 4px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(201,151,74,.8);
+      background: var(--gold);
+      color: var(--ink);
+      font-size: .8rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    footer {
+      padding: 20px 32px 32px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      text-align: center;
+      font-size: .75rem;
+      color: rgba(253,250,246,.5);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">dwell<span>iq</span></div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Contact</h1>
+    <p>
+      This is a prototype. For now, this form is just a front‑end mock, but it shows the structure 
+      you’d use for a real support or inquiry channel later.
+    </p>
+    <form>
+      <div>
+        abel for="name">Name</label>
+        <input id="name" type="text" placeholder="Your name" />
+      </div>
+      <div>
+        abel for="email">Email</label>
+        <input id="email" type="email" placeholder="you@example.com" />
+      </div>
+      <div>
+        abel for="msg">Message</label>
+        <textarea id="msg" placeholder="Tell us about your room, questions or ideas..."></textarea>
+      </div>
+      <button type="button">Send (mock)</button>
+    </form>
+  </main>
+
+  <footer>
+    © 2026 Dwelliq · MVP prototype
+  </footer>
+</body>
+</html>
