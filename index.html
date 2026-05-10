@@ -5,16 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dwelliq — AI Home Styling Advisor</title>
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
+  <!-- Google Fonts - -->
+  //fonts.googleapis.com" />
+  //fonts.gstatic.com" crossorigin />
+  //fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
     rel="stylesheet"
   />
 
   <!-- Framer Motion (UMD) -->
-  <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.umd.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/framer-motion@12.23.12/dist/framer-motion.umd.min.js" defer></script>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -47,7 +46,7 @@
 
     a { color: inherit; }
 
-    /* Background floating shapes (very subtle) */
+    /* Background floating shapes */
     .bg-layer {
       position: fixed;
       inset: 0;
@@ -85,7 +84,7 @@
       100% { transform: translate3d(0,0,0); }
     }
 
-    /* Floating cards */
+    /* Subtle float */
     @keyframes float {
       0%   { transform: translateY(0px); }
       33%  { transform: translateY(-6px); }
@@ -102,7 +101,7 @@
       position: sticky;
       top: 0;
       z-index: 10;
-      background: rgba(251,247,242,0.94);
+      background: rgba(251,247,242,0.96);
       border-bottom: 1px solid rgba(0,0,0,0.04);
       backdrop-filter: blur(10px);
     }
@@ -188,12 +187,10 @@
 
     @media (max-width: 960px) {
       header.site-header { padding: 12px 20px; }
-      nav.main-nav { display: none; } /* keeps logo clean on mobile */
+      nav.main-nav { display: none; }
     }
 
-    main {
-      transform-style: preserve-3d;
-    }
+    main { transform-style: preserve-3d; }
 
     /* Hero */
     section#hero {
@@ -208,9 +205,7 @@
       gap: 40px;
       align-items: center;
     }
-    .hero-text {
-      position: relative;
-    }
+    .hero-text { position: relative; }
     .hero-kicker {
       font-size: 0.78rem;
       letter-spacing: 0.14em;
@@ -357,7 +352,6 @@
       .hero-inner { grid-template-columns: 1fr; }
     }
 
-    /* Divider */
     .divider {
       border: none;
       height: 1px;
@@ -372,9 +366,9 @@
 
     .section { scroll-margin-top: 80px; }
 
-    /* Cards: responsive, light, floating */
+    /* MVP cards */
     .cards-section.section {
-      padding: 64px 32px 90px;
+      padding: 48px 20px 64px;
       max-width: 1200px;
       margin: 0 auto;
     }
@@ -384,49 +378,47 @@
       color: var(--muted);
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      margin-bottom: 34px;
+      margin-bottom: 24px;
     }
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px;
+      gap: 20px;
     }
 
     .version-card {
-      border-radius: 20px;
+      border-radius: 18px;
       background: var(--card);
-      border: 1px solid rgba(0,0,0,0.04);
-      cursor: pointer;
+      border: 1px solid rgba(0,0,0,0.06);
       text-decoration: none;
+      color: inherit;
       display: flex;
       flex-direction: column;
       min-height: 100%;
-      position: relative;
-      will-change: transform;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       animation: float 9s ease-in-out infinite;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, background 0.3s ease;
     }
     .version-card:nth-child(2) { animation-duration: 10s; animation-delay: -2s; }
     .version-card:nth-child(3) { animation-duration: 8s; animation-delay: -4s; }
-
     .version-card:hover {
       animation-play-state: paused;
       transform: translateY(-10px);
-      border-color: rgba(199,154,76,0.6);
       box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+      border-color: rgba(199,154,76,0.6);
     }
 
     .vc-preview {
-      height: 220px;
-      position: relative;
+      height: 180px;
       overflow: hidden;
+      position: relative;
       border-bottom: 1px solid rgba(0,0,0,0.04);
     }
     .vc-preview img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transform: scale(1.02);
+      transform: scale(1.03);
       opacity: 0.9;
       transition: transform 0.5s ease, opacity 0.35s ease;
     }
@@ -434,31 +426,29 @@
       transform: scale(1.05);
       opacity: 1;
     }
-    .vc-overlay { position: absolute; inset: 0; }
-
     .vc-version-tag {
       position: absolute;
-      top: 12px;
-      left: 14px;
+      top: 10px;
+      left: 10px;
       font-family: var(--mono);
       font-size: 0.65rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: #FDFBF8;
       background: rgba(17,16,14,0.8);
+      color: #FDFBF8;
+      padding: 3px 8px;
       border-radius: 999px;
-      padding: 3px 9px;
     }
 
     .vc-body {
-      padding: 18px 18px 20px;
+      padding: 16px 16px 18px;
       display: flex;
       flex-direction: column;
       flex: 1;
     }
     .vc-name {
       font-family: var(--serif);
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 300;
       margin-bottom: 4px;
       color: #2B241C;
@@ -466,52 +456,33 @@
     .vc-tagline {
       font-size: 0.8rem;
       color: #827669;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
       font-style: italic;
     }
     .vc-features {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-    .vc-feat {
-      font-size: 0.68rem;
+      list-style: none;
+      padding: 0;
+      margin: 0 0 12px 0;
+      font-size: 0.8rem;
       color: #6A6155;
-      background: #F6F0E7;
-      border-radius: 999px;
-      padding: 3px 8px;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
     }
     .vc-cta {
       margin-top: auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .vc-cta-label {
       font-size: 0.8rem;
-      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       color: #4B4237;
-      transition: color 0.2s ease;
     }
-    .version-card:hover .vc-cta-label { color: var(--gold); }
     .vc-arrow {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       border-radius: 999px;
       border: 1px solid rgba(0,0,0,0.12);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 0.8rem;
-      transition: all 0.3s ease;
-    }
-    .version-card:hover .vc-arrow {
-      background: var(--gold);
-      border-color: var(--gold);
-      color: #fff;
     }
 
     /* How it works */
@@ -588,9 +559,7 @@
       color: #6E6559;
       text-decoration: none;
     }
-    .footer-link:hover {
-      color: #3F362C;
-    }
+    .footer-link:hover { color: #3F362C; }
     .ft-logo {
       font-family: var(--serif);
       font-size: 1.35rem;
@@ -628,6 +597,7 @@
   <nav class="main-nav">
     <div class="nav-links">
       <a href="#hero" class="nav-link">Home</a>
+      <a href="#designs" class="nav-link">MVPs</a>
       <a href="about.html" class="nav-link">About</a>
       <a href="architecture.html" class="nav-link">Architecture</a>
       <a href="portfolio.html" class="nav-link">Portfolio</a>
@@ -667,8 +637,8 @@
         </div>
 
         <p class="hero-meta">
-          No login required to try the demo. Create an account later to save layouts, compare rooms,
-          and collaborate with a designer in real time.
+          No login required to try the demo. Create an account later to save layouts,
+          compare rooms, and collaborate with a designer in real time.
         </p>
       </div>
 
@@ -710,80 +680,71 @@
 
   <hr class="divider" />
 
-  <!-- VERSION CARDS (all 3 clearly visible) -->
+  <!-- MVP CARDS -->
   <section id="designs" class="cards-section section">
-    <p class="cards-label">Explore the three landing directions</p>
+    <p class="cards-label">Explore the three MVP landing pages</p>
     <div class="cards-grid">
-      <!-- V3 -->
+      <!-- MVP 1: Warm Organic -->
       <a href="v3-warm-organic.html" class="version-card">
         <div class="vc-preview">
           <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80"
                alt="Warm Organic" loading="lazy" />
-          <div class="vc-overlay"></div>
-          <span class="vc-version-tag">Version 3</span>
+          <span class="vc-version-tag">MVP · V3</span>
         </div>
         <div class="vc-body">
           <h2 class="vc-name">Warm Organic</h2>
           <p class="vc-tagline">“Your room, intentionally designed.”</p>
-          <div class="vc-features">
-            <span class="vc-feat">CSS floor plan</span>
-            <span class="vc-feat">Clip‑path reveals</span>
-            <span class="vc-feat">Accordion steps</span>
-            <span class="vc-feat">Style carousel</span>
-            <span class="vc-feat">Parallax hero</span>
-          </div>
+          <ul class="vc-featureses">
+            >• CSS floor plan with warm neutrals</l/li>
+            >• Accordion steps and style carousel</l/li>
+            >• Great for everyday home use</li>
+          </ul>
           <div class="vc-cta">
-            <span class="vc-cta-label">View design →</span>
+            <span>Open Warm Organic →</span>
             <span class="vc-arrow">→</span>
           </div>
         </div>
       </a>
 
-      <!-- V4 -->
+      <!-- MVP 2: Spotlight -->
       <a href="v4-spotlight.html" class="version-card">
         <div class="vc-preview">
           <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=800&q=80"
                alt="Spotlight" loading="lazy" />
-          <div class="vc-overlay"></div>
-          <span class="vc-version-tag">Version 4</span>
+          <span class="vc-version-tag">MVP · V4</span>
         </div>
         <div class="vc-body">
           <h2 class="vc-name">Spotlight</h2>
           <p class="vc-tagline">“Stop guessing. Start knowing what to buy.”</p>
-          <div class="vc-features">
-            <span class="vc-feat">Cursor spotlight</span>
-            <span class="vc-feat">Live product demo</span>
-            <span class="vc-feat">Animated border</span>
-            <span class="vc-feat">Number ticker</span>
-            <span class="vc-feat">Testimonials</span>
-          </div>
+          <ul class="vc-featureses">
+            >• Cursor spotlight effect</l/li>
+            >• Live product demo interactions</l/li>
+            >• Great for storytelling</li>
+          </ul>
           <div class="vc-cta">
-            <span class="vc-cta-label">View design →</span>
+            <span>Open Spotlight →</span>
             <span class="vc-arrow">→</span>
           </div>
         </div>
       </a>
 
-      <!-- V5 -->
+      <!-- MVP 3: Luxury Magazine -->
       <a href="v5-luxury-magazine.html" class="version-card">
         <div class="vc-preview">
           <img src="https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&q=80"
                alt="Luxury Magazine" loading="lazy" />
-          <div class="vc-overlay"></div>
-          <span class="vc-version-tag">Version 5</span>
+          <span class="vc-version-tag">MVP · V5</span>
         </div>
         <div class="vc-body">
           <h2 class="vc-name">Luxury Magazine</h2>
           <p class="vc-tagline">“Stop guessing. Start buying with confidence.”</p>
-          <div class="vc-features">
-            <span class="vc-feat">Aurora gradient</span>
-            <span class="vc-feat">Text scramble</span>
-            <span class="vc-feat">Drag gallery</span>
-            <span class="vc-feat">Budget calculator</span>
-            <span class="vc-feat">Floating cards</span>
-          </div>
+          <ul class="vc-featureses">
+            >• Editorial layout & aurora gradient</l/li>
+            >• Text scramble and drag gallery</l/li>
+            >• Best for high‑end pitch</li>
+          </ul>
           <div class="vc-cta">
-            <span class="vc-cta-label">View design →</span>
+            <span>Open Luxury Magazine →</span>
             <span class="vc-arrow">→</span>
           </div>
         </div>
@@ -886,7 +847,7 @@
       });
     }
 
-    // Scroll-linked subtle scale on cards
+    // Scroll-linked scale on cards
     const cardsSection = document.querySelector('.cards-section');
     if (cardsSection && scroll) {
       scroll(
