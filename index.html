@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dwelliq — AI Home Styling Advisor</title>
 
-  <!-- Google Fonts - -->
-  //fonts.googleapis.com" />
-  //fonts.gstatic.com" crossorigin />
-  //fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
     rel="stylesheet"
   />
 
-  <!-- Framer Motion (UMD) -->
+  <!-- Framer Motion (UMD) for subtle motion -->
   <script src="https://cdn.jsdelivr.net/npm/framer-motion@12.23.12/dist/framer-motion.umd.min.js" defer></script>
 
   <style>
@@ -44,9 +45,9 @@
       overflow-x: hidden;
     }
 
-    a { color: inherit; }
+    a { color: inherit; text-decoration: none; }
 
-    /* Background floating shapes */
+    /* Soft background shapes */
     .bg-layer {
       position: fixed;
       inset: 0;
@@ -84,7 +85,7 @@
       100% { transform: translate3d(0,0,0); }
     }
 
-    /* Subtle float */
+    /* Gentle float */
     @keyframes float {
       0%   { transform: translateY(0px); }
       33%  { transform: translateY(-6px); }
@@ -123,11 +124,7 @@
       color: var(--gold);
       background: radial-gradient(circle at 30% 0%, rgba(199,154,76,0.25), transparent 60%);
     }
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
+    .brand-text { display: flex; flex-direction: column; gap: 2px; }
     .brand-name {
       font-family: var(--serif);
       font-size: 1.1rem;
@@ -151,7 +148,6 @@
       gap: 14px;
     }
     .nav-link {
-      text-decoration: none;
       color: var(--muted);
       padding: 3px 0;
       position: relative;
@@ -175,13 +171,11 @@
       border: 1px solid rgba(199,154,76,0.8);
       background: rgba(199,154,76,0.12);
       color: var(--ink);
-      text-decoration: none;
       font-size: 0.8rem;
     }
     .auth-secondary {
       font-size: 0.8rem;
       color: var(--muted);
-      text-decoration: none;
     }
     .auth-secondary:hover { color: var(--gold); }
 
@@ -246,7 +240,6 @@
       font-weight: 600;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      text-decoration: none;
       cursor: pointer;
       box-shadow: 0 10px 24px rgba(0,0,0,0.15);
       transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
@@ -259,7 +252,6 @@
     .hero-secondary-link {
       font-size: 0.82rem;
       color: #6F665B;
-      text-decoration: none;
     }
     .hero-secondary-link:hover { color: var(--accent); }
     .hero-meta {
@@ -355,12 +347,7 @@
     .divider {
       border: none;
       height: 1px;
-      background: linear-gradient(
-        to right,
-        transparent,
-        rgba(0,0,0,0.06),
-        transparent
-      );
+      background: linear-gradient(to right, transparent, rgba(0,0,0,0.06), transparent);
       margin: 0 40px;
     }
 
@@ -390,8 +377,6 @@
       border-radius: 18px;
       background: var(--card);
       border: 1px solid rgba(0,0,0,0.06);
-      text-decoration: none;
-      color: inherit;
       display: flex;
       flex-direction: column;
       min-height: 100%;
@@ -495,10 +480,7 @@
     @media (max-width: 640px) {
       .how-strip.section { padding: 48px 20px; }
     }
-    .how-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+    .how-inner { max-width: 1200px; margin: 0 auto; }
     .how-label {
       font-size: 0.72rem;
       color: #7A7064;
@@ -557,7 +539,6 @@
     }
     .footer-link {
       color: #6E6559;
-      text-decoration: none;
     }
     .footer-link:hover { color: #3F362C; }
     .ft-logo {
@@ -694,10 +675,10 @@
         <div class="vc-body">
           <h2 class="vc-name">Warm Organic</h2>
           <p class="vc-tagline">“Your room, intentionally designed.”</p>
-          <ul class="vc-featureses">
-            >• CSS floor plan with warm neutrals</l/li>
-            >• Accordion steps and style carousel</l/li>
-            >• Great for everyday home use</li>
+          <ul class="vc-features">
+            <li>• CSS floor plan with warm neutrals</li>
+            <li>• Accordion steps and style carousel</li>
+            <li>• Great for everyday home use</li>
           </ul>
           <div class="vc-cta">
             <span>Open Warm Organic →</span>
@@ -716,10 +697,10 @@
         <div class="vc-body">
           <h2 class="vc-name">Spotlight</h2>
           <p class="vc-tagline">“Stop guessing. Start knowing what to buy.”</p>
-          <ul class="vc-featureses">
-            >• Cursor spotlight effect</l/li>
-            >• Live product demo interactions</l/li>
-            >• Great for storytelling</li>
+          <ul class="vc-features">
+            <li>• Cursor spotlight effect</li>
+            <li>• Live product demo interactions</li>
+            <li>• Great for storytelling</li>
           </ul>
           <div class="vc-cta">
             <span>Open Spotlight →</span>
@@ -738,10 +719,10 @@
         <div class="vc-body">
           <h2 class="vc-name">Luxury Magazine</h2>
           <p class="vc-tagline">“Stop guessing. Start buying with confidence.”</p>
-          <ul class="vc-featureses">
-            >• Editorial layout & aurora gradient</l/li>
-            >• Text scramble and drag gallery</l/li>
-            >• Best for high‑end pitch</li>
+          <ul class="vc-features">
+            <li>• Editorial layout & aurora gradient</li>
+            <li>• Text scramble and drag gallery</li>
+            <li>• Best for high‑end pitch</li>
           </ul>
           <div class="vc-cta">
             <span>Open Luxury Magazine →</span>
@@ -825,7 +806,6 @@
     if (!FM) return;
     const { animate, scroll } = FM;
 
-    // Hero text staggered reveal
     const heroChildren = document.querySelectorAll('.hero-text > *');
     heroChildren.forEach((el, i) => {
       animate(el,
@@ -834,7 +814,6 @@
       );
     });
 
-    // Parallax hero image
     const heroImage = document.querySelector('#hero-image');
     if (heroImage) {
       window.addEventListener('mousemove', (e) => {
@@ -847,7 +826,6 @@
       });
     }
 
-    // Scroll-linked scale on cards
     const cardsSection = document.querySelector('.cards-section');
     if (cardsSection && scroll) {
       scroll(
@@ -859,7 +837,6 @@
       );
     }
 
-    // Magnetic CTA
     const btn = document.querySelector('.hero-primary-btn');
     if (btn) {
       btn.addEventListener('mousemove', (e) => {
