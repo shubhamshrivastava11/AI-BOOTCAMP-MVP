@@ -5,28 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dwelliq — AI Home Styling Advisor</title>
 
-  <!-- Google Fonts - -->
-  //fonts.googleapis.com" />
-  //fonts.gstatic.com" crossorigin />
-  //fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
     rel="stylesheet"
   />
 
-  <!-- Framer Motion (UMD) -->
-  <script src="https://cdn.jsdelivr.net/npm/framer-motion@12.23.12/dist/framer-motion.umd.min.js" defer></script>
+  <!-- Framer Motion (UMD) for subtle motion -->
+  <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.umd.js" defer></script>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #FBF7F2;
-      --bg-soft: #F4EEE6;
-      --card: #FFFFFF;
-      --ink: #1C1A16;
-      --muted: #6C645A;
-      --gold: #C79A4C;
-      --accent: #3F6A5A;
-      --border: #E0D7CC;
+      --cream: #FDFAF6;
+      --ink: #050507;
+      --ink-soft: #0d0f12;
+      --gold: #C9974A;
+      --gold-soft: #E2BE7B;
+      --accent: #4A6A58;
       --sans: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       --serif: 'Cormorant Garamond', Georgia, serif;
       --mono: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -36,60 +35,59 @@
 
     body {
       font-family: var(--sans);
-      background:
-        radial-gradient(circle at top left, #FFF6E7 0, var(--bg) 40%),
-        radial-gradient(circle at bottom right, #E6F0EB 0, var(--bg-soft) 55%);
-      color: var(--ink);
+      background: radial-gradient(circle at top, #141725 0, #050507 50%, #020304 100%);
+      color: var(--cream);
       min-height: 100vh;
       overflow-x: hidden;
     }
 
     a { color: inherit; }
 
-    /* Background floating shapes */
+    /* Background motion orbs (no blur, so not fuzzy) */
     .bg-layer {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: -1;
       overflow: hidden;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.02) 0, transparent 60%);
     }
     .bg-orb {
       position: absolute;
       border-radius: 50%;
-      opacity: 0.16;
-      mix-blend-mode: multiply;
+      opacity: 0.18;
+      mix-blend-mode: screen;
       animation: drift 40s ease-in-out infinite;
     }
     .bg-orb.gold {
-      width: 420px;
-      height: 420px;
-      background: radial-gradient(circle, rgba(199,154,76,0.7), transparent 60%);
-      top: -120px;
-      left: -120px;
+      width: 380px;
+      height: 380px;
+      background: radial-gradient(circle, rgba(201,151,74,0.65), transparent 60%);
+      top: -80px;
+      left: -60px;
     }
-    .bg-orb.green {
-      width: 360px;
-      height: 360px;
-      background: radial-gradient(circle, rgba(63,106,90,0.55), transparent 60%);
+    .bg-orb.teal {
+      width: 340px;
+      height: 340px;
+      background: radial-gradient(circle, rgba(74,106,88,0.7), transparent 60%);
       bottom: -140px;
-      right: -120px;
+      right: -60px;
       animation-duration: 55s;
       animation-direction: reverse;
     }
 
     @keyframes drift {
       0%   { transform: translate3d(0,0,0); }
-      50%  { transform: translate3d(30px, 24px, 0); }
+      50%  { transform: translate3d(32px, 26px, 0); }
       100% { transform: translate3d(0,0,0); }
     }
 
-    /* Subtle float */
+    /* Floating cards */
     @keyframes float {
-      0%   { transform: translateY(0px); }
-      33%  { transform: translateY(-6px); }
-      66%  { transform: translateY(-3px); }
-      100% { transform: translateY(0px); }
+      0%   { transform: translateY(0px) rotate(0deg); }
+      33%  { transform: translateY(-6px) rotate(0.3deg); }
+      66%  { transform: translateY(-3px) rotate(-0.3deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
     }
 
     /* Header */
@@ -101,9 +99,9 @@
       position: sticky;
       top: 0;
       z-index: 10;
-      background: rgba(251,247,242,0.96);
-      border-bottom: 1px solid rgba(0,0,0,0.04);
-      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(5,5,7,0.96), rgba(5,5,7,0.92));
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(8px);
     }
     .brand-lockup {
       display: flex;
@@ -114,14 +112,14 @@
       width: 26px;
       height: 26px;
       border-radius: 999px;
-      border: 1px solid rgba(199,154,76,0.8);
+      border: 1px solid rgba(201,151,74,0.55);
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: var(--mono);
       font-size: 0.7rem;
       color: var(--gold);
-      background: radial-gradient(circle at 30% 0%, rgba(199,154,76,0.25), transparent 60%);
+      background: radial-gradient(circle at 30% 0%, rgba(201,151,74,0.3), transparent 60%);
     }
     .brand-text {
       display: flex;
@@ -136,7 +134,7 @@
     }
     .brand-sub {
       font-size: 0.72rem;
-      color: var(--muted);
+      color: rgba(253,250,246,0.56);
     }
 
     nav.main-nav {
@@ -152,7 +150,7 @@
     }
     .nav-link {
       text-decoration: none;
-      color: var(--muted);
+      color: rgba(253,250,246,0.78);
       padding: 3px 0;
       position: relative;
       white-space: nowrap;
@@ -172,15 +170,15 @@
     .auth-primary {
       padding: 6px 14px;
       border-radius: 999px;
-      border: 1px solid rgba(199,154,76,0.8);
-      background: rgba(199,154,76,0.12);
-      color: var(--ink);
+      border: 1px solid rgba(201,151,74,0.7);
+      background: rgba(201,151,74,0.12);
+      color: var(--cream);
       text-decoration: none;
       font-size: 0.8rem;
     }
     .auth-secondary {
       font-size: 0.8rem;
-      color: var(--muted);
+      color: rgba(253,250,246,0.7);
       text-decoration: none;
     }
     .auth-secondary:hover { color: var(--gold); }
@@ -190,11 +188,13 @@
       nav.main-nav { display: none; }
     }
 
-    main { transform-style: preserve-3d; }
+    main {
+      transform-style: preserve-3d;
+    }
 
     /* Hero */
     section#hero {
-      padding: 60px 40px 40px;
+      padding: 64px 40px 40px;
       max-width: 1200px;
       margin: 0 auto;
       scroll-margin-top: 80px;
@@ -205,25 +205,27 @@
       gap: 40px;
       align-items: center;
     }
-    .hero-text { position: relative; }
+    .hero-text {
+      position: relative;
+    }
     .hero-kicker {
       font-size: 0.78rem;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: rgba(253,250,246,0.62);
       margin-bottom: 10px;
     }
     .hero-heading {
       font-family: var(--serif);
       font-weight: 300;
-      font-size: clamp(2.1rem, 3vw, 2.6rem);
+      font-size: clamp(2.2rem, 3.2vw, 2.7rem);
       line-height: 1.1;
       margin-bottom: 14px;
     }
-    .hero-heading span { color: var(--gold); }
+    .hero-heading span { color: var(--gold-soft); }
     .hero-lede {
       font-size: 0.96rem;
-      color: #5B5246;
+      color: rgba(253,250,246,0.8);
       line-height: 1.7;
       max-width: 540px;
       margin-bottom: 20px;
@@ -241,41 +243,44 @@
       border-radius: 999px;
       border: none;
       background: var(--gold);
-      color: #fff;
+      color: var(--ink);
       font-size: 0.84rem;
       font-weight: 600;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       text-decoration: none;
       cursor: pointer;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.35);
       transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
     }
     .hero-primary-btn:hover {
-      background: #E2BE7B;
+      background: #e8c88a;
       transform: translateY(-1px);
-      box-shadow: 0 14px 32px rgba(0,0,0,0.18);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
     }
     .hero-secondary-link {
       font-size: 0.82rem;
-      color: #6F665B;
+      color: rgba(253,250,246,0.72);
       text-decoration: none;
     }
-    .hero-secondary-link:hover { color: var(--accent); }
+    .hero-secondary-link:hover {
+      color: var(--gold-soft);
+    }
     .hero-meta {
       font-size: 0.78rem;
-      color: #847A6E;
+      color: rgba(253,250,246,0.58);
       max-width: 520px;
     }
 
     .hero-image {
       position: relative;
-      border-radius: 22px;
+      border-radius: 20px;
       overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.06);
-      background: linear-gradient(135deg, #FFF7EA, #E8F1EB);
+      border: 1px solid rgba(204,200,192,0.28);
+      background: radial-gradient(circle at 0 0, rgba(201,151,74,0.2), transparent 55%),
+                  radial-gradient(circle at 100% 100%, rgba(74,106,88,0.18), transparent 55%);
       min-height: 260px;
-      box-shadow: 0 22px 50px rgba(0,0,0,0.12);
+      box-shadow: 0 28px 70px rgba(0,0,0,0.7);
       transition: box-shadow 0.3s ease, transform 0.3s ease;
     }
     .hero-image::before {
@@ -283,8 +288,9 @@
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(135deg, rgba(199,154,76,0.12), transparent 55%),
-        radial-gradient(circle at 0 100%, rgba(248,241,232,0.9), transparent 55%);
+        linear-gradient(135deg, rgba(201,151,74,0.28), transparent 55%),
+        radial-gradient(circle at 0 100%, rgba(7,7,9,0.96), transparent 55%);
+      opacity: 0.5;
       pointer-events: none;
     }
     .hero-image-content {
@@ -305,46 +311,44 @@
     }
     .hero-image-title {
       font-family: var(--serif);
-      font-size: 1.25rem;
+      font-size: 1.3rem;
       font-weight: 300;
-      color: #2F2921;
     }
     .hero-image-pill {
       font-size: 0.72rem;
       padding: 4px 10px;
       border-radius: 999px;
-      border: 1px solid rgba(0,0,0,0.08);
-      background: rgba(255,255,255,0.85);
-      color: #5B5246;
+      border: 1px solid rgba(253,250,246,0.42);
+      background: rgba(10,9,8,0.82);
     }
     .hero-image-text-overlay {
       border-radius: 16px;
       padding: 12px 14px;
-      background: rgba(255,255,255,0.86);
-      border: 1px solid rgba(0,0,0,0.04);
+      background: rgba(10,11,14,0.9);
+      border: 1px solid rgba(255,255,255,0.14);
+      margin-bottom: 10px;
     }
     .hero-image-text-overlay-text {
       font-size: 0.8rem;
-      color: #615445;
+      color: rgba(253,250,246,0.82);
       line-height: 1.6;
     }
     .hero-mini-metrics {
       display: flex;
       gap: 14px;
       font-size: 0.72rem;
-      color: #6C645A;
+      color: rgba(253,250,246,0.7);
     }
     .hero-metric-label {
       text-transform: uppercase;
       letter-spacing: 0.14em;
       font-size: 0.6rem;
-      color: #A09688;
+      color: rgba(253,250,246,0.5);
       margin-bottom: 2px;
     }
     .hero-metric-value {
       font-family: var(--mono);
       font-size: 0.8rem;
-      color: #3D352A;
     }
 
     @media (max-width: 900px) {
@@ -352,144 +356,179 @@
       .hero-inner { grid-template-columns: 1fr; }
     }
 
+    /* Divider */
     .divider {
       border: none;
       height: 1px;
       background: linear-gradient(
         to right,
         transparent,
-        rgba(0,0,0,0.06),
+        rgba(204,200,192,0.26),
         transparent
       );
       margin: 0 40px;
     }
 
-    .section { scroll-margin-top: 80px; }
+    /* Sections use scroll-margin for smooth internal navigation */
+    .section {
+      scroll-margin-top: 80px;
+    }
 
-    /* MVP cards */
+    /* Cards section */
     .cards-section.section {
-      padding: 48px 20px 64px;
+      padding: 64px 32px 90px;
       max-width: 1200px;
       margin: 0 auto;
     }
     .cards-label {
       text-align: center;
       font-size: 0.72rem;
-      color: var(--muted);
-      letter-spacing: 0.14em;
+      color: var(--gold);
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      margin-bottom: 24px;
+      margin-bottom: 34px;
     }
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+        max-width: 480px;
+        margin: 0 auto;
+      }
     }
 
     .version-card {
-      border-radius: 18px;
-      background: var(--card);
-      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 20px;
+      background: rgba(10,12,16,0.96);
+      border: 1px solid rgba(255,255,255,0.06);
+      cursor: pointer;
       text-decoration: none;
-      color: inherit;
-      display: flex;
-      flex-direction: column;
-      min-height: 100%;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.06);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: block;
+      position: relative;
+      transform-style: preserve-3d;
+      will-change: transform;
       animation: float 9s ease-in-out infinite;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, background 0.3s ease;
     }
     .version-card:nth-child(2) { animation-duration: 10s; animation-delay: -2s; }
     .version-card:nth-child(3) { animation-duration: 8s; animation-delay: -4s; }
     .version-card:hover {
       animation-play-state: paused;
-      transform: translateY(-10px);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.12);
-      border-color: rgba(199,154,76,0.6);
+      transform: translateY(-14px) scale(1.03) rotateX(3deg);
+      border-color: rgba(201,151,74,0.85);
+      background: rgba(14,16,20,1);
+      box-shadow: 0 30px 72px rgba(0,0,0,0.72);
     }
 
     .vc-preview {
-      height: 180px;
-      overflow: hidden;
+      height: 220px;
       position: relative;
-      border-bottom: 1px solid rgba(0,0,0,0.04);
+      overflow: hidden;
     }
     .vc-preview img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transform: scale(1.03);
-      opacity: 0.9;
-      transition: transform 0.5s ease, opacity 0.35s ease;
+      opacity: 0.82;
+      transition: transform 0.6s ease, opacity 0.35s ease;
     }
     .version-card:hover .vc-preview img {
       transform: scale(1.05);
-      opacity: 1;
+      opacity: 0.96;
     }
+    .vc-overlay { position: absolute; inset: 0; }
+
     .vc-version-tag {
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 16px;
+      left: 16px;
       font-family: var(--mono);
       font-size: 0.65rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      background: rgba(17,16,14,0.8);
-      color: #FDFBF8;
-      padding: 3px 8px;
+      color: rgba(253,250,246,0.76);
+      background: rgba(10,9,8,0.8);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 4px 10px;
       border-radius: 999px;
     }
 
-    .vc-body {
-      padding: 16px 16px 18px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
+    .vc-body { padding: 22px; }
     .vc-name {
       font-family: var(--serif);
-      font-size: 1.4rem;
+      font-size: 1.55rem;
       font-weight: 300;
-      margin-bottom: 4px;
-      color: #2B241C;
+      margin-bottom: 6px;
     }
     .vc-tagline {
-      font-size: 0.8rem;
-      color: #827669;
-      margin-bottom: 10px;
+      font-size: 0.78rem;
+      color: rgba(253,250,246,0.6);
+      margin-bottom: 16px;
       font-style: italic;
     }
     .vc-features {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 12px 0;
-      font-size: 0.8rem;
-      color: #6A6155;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+    .vc-feat {
+      font-size: 0.66rem;
+      color: rgba(253,250,246,0.78);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 3px 8px;
+      border-radius: 999px;
+      letter-spacing: 0.04em;
     }
     .vc-cta {
-      margin-top: auto;
-      font-size: 0.8rem;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      color: #4B4237;
+      justify-content: space-between;
     }
+    .vc-cta-label {
+      font-size: 0.78rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .version-card:hover .vc-cta-label { color: var(--gold-soft); }
     .vc-arrow {
-      width: 26px;
-      height: 26px;
+      width: 30px;
+      height: 30px;
       border-radius: 999px;
-      border: 1px solid rgba(0,0,0,0.12);
+      border: 1px solid rgba(204,200,192,0.35);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 0.8rem;
+      transition: all 0.3s ease;
     }
+    .version-card:hover .vc-arrow {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--ink);
+    }
+    .vc-glow {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+    }
+    .version-card:hover .vc-glow { transform: scaleX(1); }
 
     /* How it works */
     .how-strip.section {
-      background: #F4EEE6;
-      border-top: 1px solid rgba(0,0,0,0.04);
-      border-bottom: 1px solid rgba(0,0,0,0.04);
+      background: #0b0d11;
+      border-top: 1px solid rgba(204,200,192,0.2);
+      border-bottom: 1px solid rgba(204,200,192,0.18);
       padding: 56px 40px;
     }
     @media (max-width: 640px) {
@@ -501,8 +540,8 @@
     }
     .how-label {
       font-size: 0.72rem;
-      color: #7A7064;
-      letter-spacing: 0.14em;
+      color: var(--gold);
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       margin-bottom: 32px;
       text-align: center;
@@ -526,26 +565,25 @@
     }
     .how-title {
       font-family: var(--serif);
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       font-weight: 300;
       margin-bottom: 6px;
-      color: #31271D;
     }
     .how-desc {
-      font-size: 0.84rem;
-      color: #6E6559;
+      font-size: 0.82rem;
+      color: rgba(253,250,246,0.8);
       line-height: 1.7;
     }
 
     /* Footer */
     footer.site-footer {
-      padding: 28px 40px 36px;
-      border-top: 1px solid rgba(0,0,0,0.04);
+      padding: 30px 40px 40px;
+      border-top: 1px solid rgba(255,255,255,0.08);
       text-align: center;
-      background: #FBF7F2;
+      background: #050507;
     }
     @media (max-width: 640px) {
-      footer.site-footer { padding: 24px 20px 32px; }
+      footer.site-footer { padding: 28px 20px 36px; }
     }
     .footer-top {
       display: flex;
@@ -556,25 +594,27 @@
       font-size: 0.8rem;
     }
     .footer-link {
-      color: #6E6559;
+      color: rgba(253,250,246,0.7);
       text-decoration: none;
     }
-    .footer-link:hover { color: #3F362C; }
+    .footer-link:hover {
+      color: rgba(253,250,246,0.95);
+    }
     .ft-logo {
       font-family: var(--serif);
       font-size: 1.35rem;
       font-weight: 300;
-      color: #3B3127;
+      color: rgba(253,250,246,0.8);
       margin-bottom: 4px;
     }
     .ft-tagline {
       font-size: 0.76rem;
-      color: #8B8072;
+      color: rgba(253,250,246,0.5);
       margin-bottom: 6px;
     }
     .ft-copy {
       font-size: 0.72rem;
-      color: #A79C8C;
+      color: rgba(253,250,246,0.34);
     }
   </style>
 </head>
@@ -582,7 +622,7 @@
 
 <div class="bg-layer">
   <div class="bg-orb gold"></div>
-  <div class="bg-orb green"></div>
+  <div class="bg-orb teal"></div>
 </div>
 
 <header class="site-header">
@@ -597,7 +637,6 @@
   <nav class="main-nav">
     <div class="nav-links">
       <a href="#hero" class="nav-link">Home</a>
-      <a href="#designs" class="nav-link">MVPs</a>
       <a href="about.html" class="nav-link">About</a>
       <a href="architecture.html" class="nav-link">Architecture</a>
       <a href="portfolio.html" class="nav-link">Portfolio</a>
@@ -637,8 +676,8 @@
         </div>
 
         <p class="hero-meta">
-          No login required to try the demo. Create an account later to save layouts,
-          compare rooms, and collaborate with a designer in real time.
+          No login required to try the demo. Create an account later to save layouts, compare rooms,
+          and collaborate with a designer in real time.
         </p>
       </div>
 
@@ -680,71 +719,86 @@
 
   <hr class="divider" />
 
-  <!-- MVP CARDS -->
+  <!-- VERSION CARDS -->
   <section id="designs" class="cards-section section">
-    <p class="cards-label">Explore the three MVP landing pages</p>
+    <p class="cards-label">Choose a design direction</p>
     <div class="cards-grid">
-      <!-- MVP 1: Warm Organic -->
+      <!-- V3 -->
       <a href="v3-warm-organic.html" class="version-card">
         <div class="vc-preview">
           <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80"
                alt="Warm Organic" loading="lazy" />
-          <span class="vc-version-tag">MVP · V3</span>
+          <div class="vc-overlay"
+               style="background:linear-gradient(to bottom,transparent 40%,rgba(10,9,8,.9) 100%);"></div>
+          <span class="vc-version-tag">Version 3</span>
         </div>
+        <div class="vc-glow" style="background:linear-gradient(to right,#C9974A,#E8C88A);"></div>
         <div class="vc-body">
           <h2 class="vc-name">Warm Organic</h2>
           <p class="vc-tagline">“Your room, intentionally designed.”</p>
-          <ul class="vc-featureses">
-            >• CSS floor plan with warm neutrals</l/li>
-            >• Accordion steps and style carousel</l/li>
-            >• Great for everyday home use</li>
-          </ul>
+          <div class="vc-features">
+            <span class="vc-feat">CSS floor plan</span>
+            <span class="vc-feat">Clip‑path reveals</span>
+            <span class="vc-feat">Accordion steps</span>
+            <span class="vc-feat">Style carousel</span>
+            <span class="vc-feat">Parallax hero</span>
+          </div>
           <div class="vc-cta">
-            <span>Open Warm Organic →</span>
+            <span class="vc-cta-label">View design →</span>
             <span class="vc-arrow">→</span>
           </div>
         </div>
       </a>
 
-      <!-- MVP 2: Spotlight -->
+      <!-- V4 -->
       <a href="v4-spotlight.html" class="version-card">
         <div class="vc-preview">
           <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=800&q=80"
                alt="Spotlight" loading="lazy" />
-          <span class="vc-version-tag">MVP · V4</span>
+          <div class="vc-overlay"
+               style="background:linear-gradient(to bottom,transparent 40%,rgba(10,9,8,.9) 100%);"></div>
+          <span class="vc-version-tag">Version 4</span>
         </div>
+        <div class="vc-glow" style="background:linear-gradient(to right,#7B68C8,#C9974A);"></div>
         <div class="vc-body">
           <h2 class="vc-name">Spotlight</h2>
           <p class="vc-tagline">“Stop guessing. Start knowing what to buy.”</p>
-          <ul class="vc-featureses">
-            >• Cursor spotlight effect</l/li>
-            >• Live product demo interactions</l/li>
-            >• Great for storytelling</li>
-          </ul>
+          <div class="vc-features">
+            <span class="vc-feat">Cursor spotlight</span>
+            <span class="vc-feat">Live product demo</span>
+            <span class="vc-feat">Animated border</span>
+            <span class="vc-feat">Number ticker</span>
+            <span class="vc-feat">Testimonials</span>
+          </div>
           <div class="vc-cta">
-            <span>Open Spotlight →</span>
+            <span class="vc-cta-label">View design →</span>
             <span class="vc-arrow">→</span>
           </div>
         </div>
       </a>
 
-      <!-- MVP 3: Luxury Magazine -->
+      <!-- V5 -->
       <a href="v5-luxury-magazine.html" class="version-card">
         <div class="vc-preview">
           <img src="https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&q=80"
                alt="Luxury Magazine" loading="lazy" />
-          <span class="vc-version-tag">MVP · V5</span>
+          <div class="vc-overlay"
+               style="background:linear-gradient(to bottom,transparent 40%,rgba(10,9,8,.9) 100%);"></div>
+          <span class="vc-version-tag">Version 5</span>
         </div>
+        <div class="vc-glow" style="background:linear-gradient(to right,#C9974A,#8B7355);"></div>
         <div class="vc-body">
           <h2 class="vc-name">Luxury Magazine</h2>
           <p class="vc-tagline">“Stop guessing. Start buying with confidence.”</p>
-          <ul class="vc-featureses">
-            >• Editorial layout & aurora gradient</l/li>
-            >• Text scramble and drag gallery</l/li>
-            >• Best for high‑end pitch</li>
-          </ul>
+          <div class="vc-features">
+            <span class="vc-feat">Aurora gradient</span>
+            <span class="vc-feat">Text scramble</span>
+            <span class="vc-feat">Drag gallery</span>
+            <span class="vc-feat">Budget calculator</span>
+            <span class="vc-feat">Floating cards</span>
+          </div>
           <div class="vc-cta">
-            <span>Open Luxury Magazine →</span>
+            <span class="vc-cta-label">View design →</span>
             <span class="vc-arrow">→</span>
           </div>
         </div>
@@ -825,48 +879,50 @@
     if (!FM) return;
     const { animate, scroll } = FM;
 
-    // Hero text staggered reveal
+    // 1. Hero text staggered reveal
     const heroChildren = document.querySelectorAll('.hero-text > *');
     heroChildren.forEach((el, i) => {
       animate(el,
-        { opacity: [0, 1], y: [22, 0] },
+        { opacity: [0, 1], y: [26, 0] },
         { delay: i * 0.12, duration: 0.7, ease: "easeOut" }
       );
     });
 
-    // Parallax hero image
+    // 2. Parallax hero image
     const heroImage = document.querySelector('#hero-image');
     if (heroImage) {
       window.addEventListener('mousemove', (e) => {
         const x = (e.clientX / window.innerWidth) - 0.5;
         const y = (e.clientY / window.innerHeight) - 0.5;
         animate(heroImage, {
-          x: x * 16,
-          y: y * 16,
+          x: x * 24,
+          y: y * 24,
+          rotateX: -y * 6,
+          rotateY: x * 6,
         }, { type: "spring", stiffness: 90, damping: 18 });
       });
     }
 
-    // Scroll-linked scale on cards
+    // 3. Scroll-linked subtle scale on cards
     const cardsSection = document.querySelector('.cards-section');
     if (cardsSection && scroll) {
       scroll(
         animate(cardsSection, {
-          opacity: [0.7, 1],
-          scale: [0.98, 1]
+          opacity: [0.65, 1],
+          scale: [0.97, 1]
         }),
         { offset: ["start end", "center center"] }
       );
     }
 
-    // Magnetic CTA
+    // 4. Magnetic CTA
     const btn = document.querySelector('.hero-primary-btn');
     if (btn) {
       btn.addEventListener('mousemove', (e) => {
         const rect = btn.getBoundingClientRect();
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;
-        animate(btn, { x: x * 0.25, y: y * 0.25 }, {
+        animate(btn, { x: x * 0.3, y: y * 0.3 }, {
           type: "spring",
           stiffness: 220,
           damping: 20
